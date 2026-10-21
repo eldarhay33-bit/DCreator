@@ -155,7 +155,12 @@
   document.addEventListener("visibilitychange", () => { document.hidden ? stop() : start(); });
 
   /* ---------- public API ---------- */
+  /* Phones and tablets have no cursor, so the touch-reactive dot field is not drawn there
+     (the soft background colours stay). */
+  const touchOnly = window.matchMedia("(hover: none), (pointer: coarse)").matches;
+
   function set(on) {
+    if (touchOnly) { enabled = false; stop(); ctx.clearRect(0, 0, canvas.width, canvas.height); return; }
     enabled = !!on;
     if (enabled) { resize(); start(); }
     else { stop(); ctx.clearRect(0, 0, canvas.width, canvas.height); }

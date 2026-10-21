@@ -662,8 +662,27 @@ html[data-theme="day"] .stat .value { background: linear-gradient(135deg, #00a86
   .service-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
+/* phones: compact two-column cards so no card fills the whole screen */
 @media (max-width: 620px) {
-  .service-grid { grid-template-columns: 1fr; }
+  .service-grid, .card-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .service { padding: 16px 14px; }
+  .service::after { top: 22px; inset-inline-end: 14px; }
+  .service.is-open::after { top: 26px; }
+  .service-icon { width: 40px; height: 40px; border-radius: 12px; margin-bottom: 10px; }
+  .service-icon .icon { width: 20px; height: 20px; }
+  .service h3 { font-size: 1rem; margin-bottom: 6px; }
+  .service p {
+    font-size: .85rem; line-height: 1.45;
+    display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .service.is-open p { -webkit-line-clamp: unset; display: block; }
+  .service-actions-inner .btn { width: 100%; }
+  .card-body { padding: 12px; gap: 6px; }
+  .card-body h3 { font-size: 1rem; }
+  .card-body p { font-size: .85rem; -webkit-line-clamp: 2; }
+  .card-foot .host { display: none; }
+  .badge { top: 8px; inset-inline-start: 8px; font-size: .7rem; padding: .15rem .55rem; }
+  .help-banner { padding: 18px; }
   .help-actions, .help-actions .btn { width: 100%; }
 }
 
