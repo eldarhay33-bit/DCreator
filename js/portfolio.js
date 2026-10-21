@@ -194,6 +194,22 @@
     });
   }
 
+  /* The portfolio starts closed and opens on click. */
+  function initToggle() {
+    const btn = document.getElementById("portfolio-toggle");
+    const panel = document.getElementById("portfolio-panel");
+    if (!btn || !panel) return;
+    const label = btn.querySelector("span");
+    const sync = () => {
+      const open = !panel.hidden;
+      btn.setAttribute("aria-expanded", String(open));
+      label.dataset.i18n = open ? "portfolio.close" : "portfolio.open";
+      label.textContent = DC.i18n.t(label.dataset.i18n);
+    };
+    btn.addEventListener("click", () => { panel.hidden = !panel.hidden; sync(); });
+    document.addEventListener("dc:langchange", sync);
+  }
+
   /* ---------------------------------------------------------- translation */
   const encoder = new TextEncoder();
   const byteLen = (s) => encoder.encode(s).length;
@@ -305,6 +321,7 @@
   function init() {
     load();
     initFilters();
+    initToggle();
     render();
     document.addEventListener("dc:langchange", render);
     document.addEventListener("dc:portfoliochange", render);

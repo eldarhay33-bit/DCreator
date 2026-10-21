@@ -1,11 +1,11 @@
 <!doctype html>
-<html lang="en" dir="ltr" data-theme="night" data-fx="on">
+<html lang="en" dir="ltr" data-theme="day" data-fx="on">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>DCreator – Websites, Browser Games &amp; 3D Simulations</title>
   <meta name="description" content="DCreator – Digital Creator. Advanced digital solutions: website building, interactive browser games and 3D simulations.">
-  <meta name="theme-color" content="#07090d">
+  <meta name="theme-color" content="#f1faff">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M13.3 40.16A38 38 0 0 1 86.7 40.16' fill='none' stroke='%2300ff88' stroke-width='12' stroke-linecap='round'/%3E%3Cpath d='M13.3 59.84A38 38 0 0 0 86.7 59.84' fill='none' stroke='%2300e5ff' stroke-width='12' stroke-linecap='round'/%3E%3C/svg%3E">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -49,6 +49,10 @@
     <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
     <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></symbol>
     <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></symbol>
+    <symbol id="i-code" viewBox="0 0 24 24"><path d="m16 18 6-6-6-6M8 6l-6 6 6 6"/></symbol>
+    <symbol id="i-layout" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18M9 21V9"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></symbol>
     <symbol id="i-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></symbol>
   </svg>
 
@@ -60,6 +64,7 @@
     </svg>
   </template>
 
+  <div class="aurora" aria-hidden="true"><span class="orb o1"></span><span class="orb o2"></span><span class="orb o3"></span></div>
   <canvas id="fx-canvas" aria-hidden="true"></canvas>
   <a class="skip-link" href="#main" data-i18n="ui.skip">Skip to content</a>
 
@@ -144,6 +149,26 @@
             <h3 data-i18n="svc.sim.t">3D simulations</h3>
             <p data-i18n="svc.sim.d">Real-time 3D visualizations and simulations that bring products and ideas to life.</p>
           </article>
+          <article class="glass service">
+            <span class="service-icon"><svg class="icon" aria-hidden="true"><use href="#i-store"/></svg></span>
+            <h3 data-i18n="svc.store.t">Smart stores</h3>
+            <p data-i18n="svc.store.d">Online stores with secure checkout, inventory and a smooth mobile shopping experience.</p>
+          </article>
+          <article class="glass service">
+            <span class="service-icon"><svg class="icon" aria-hidden="true"><use href="#i-layout"/></svg></span>
+            <h3 data-i18n="svc.landing.t">Landing pages</h3>
+            <p data-i18n="svc.landing.d">Focused one-page sites built to convert campaigns into leads and sales.</p>
+          </article>
+          <article class="glass service">
+            <span class="service-icon"><svg class="icon" aria-hidden="true"><use href="#i-code"/></svg></span>
+            <h3 data-i18n="svc.app.t">Web apps</h3>
+            <p data-i18n="svc.app.d">Custom dashboards, booking systems and tools tailored to how your business works.</p>
+          </article>
+          <article class="glass service">
+            <span class="service-icon"><svg class="icon" aria-hidden="true"><use href="#i-shield"/></svg></span>
+            <h3 data-i18n="svc.care.t">Support &amp; maintenance</h3>
+            <p data-i18n="svc.care.d">Updates, fixes and improvements after launch, so your site stays fast and secure.</p>
+          </article>
         </div>
       </div>
     </section>
@@ -155,6 +180,17 @@
           <h2 data-i18n="portfolio.title">Portfolio</h2>
           <p data-i18n="portfolio.sub">Live projects – open any card to see it in action.</p>
         </header>
+        <p class="portfolio-note">
+          <svg class="icon" aria-hidden="true"><use href="#i-info"/></svg>
+          <span data-i18n="portfolio.note">Not every project is shown here – only those of clients who agreed to be featured.</span>
+        </p>
+        <div class="portfolio-toggle-wrap">
+          <button type="button" class="btn btn-ghost portfolio-toggle" id="portfolio-toggle" aria-expanded="false" aria-controls="portfolio-panel">
+            <span data-i18n="portfolio.open">Open portfolio</span>
+            <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg>
+          </button>
+        </div>
+        <div id="portfolio-panel" hidden>
         <div class="filters" id="portfolio-filters" role="group" data-i18n-aria="portfolio.filters">
           <button type="button" class="chip is-active" data-filter="all" aria-pressed="true" data-i18n="filter.all">All</button>
           <button type="button" class="chip" data-filter="web" aria-pressed="false" data-i18n="filter.web">Websites</button>
@@ -163,6 +199,7 @@
         </div>
         <div class="card-grid" id="portfolio-grid"></div>
         <p class="empty glass" id="portfolio-empty" hidden data-i18n="portfolio.empty">New projects are on the way – check back soon.</p>
+        </div>
       </div>
     </section>
 
@@ -242,6 +279,10 @@
               <input type="text" name="name" maxlength="100" autocomplete="name">
             </label>
             <label class="field">
+              <span class="field-label" data-i18n="contact.reach">Phone or email (so we can reply)</span>
+              <input type="text" name="reach" maxlength="120" autocomplete="email" dir="auto">
+            </label>
+            <label class="field">
               <span class="field-label" data-i18n="q4.notes">Additional notes</span>
               <textarea name="notes" rows="4" maxlength="1000" data-i18n-placeholder="q4.notesPh" placeholder="Anything else we should know?"></textarea>
             </label>
@@ -263,9 +304,13 @@
               <span data-i18n="btn.next">Next</span>
               <svg class="icon flip-rtl" aria-hidden="true"><use href="#i-arrow"/></svg>
             </button>
-            <button type="submit" class="btn btn-primary btn-wa" id="quote-send" hidden>
+            <button type="button" class="btn btn-ghost btn-send" id="quote-send-wa" hidden>
               <svg class="icon" aria-hidden="true"><use href="#i-chat"/></svg>
               <span data-i18n="btn.send">Send via WhatsApp</span>
+            </button>
+            <button type="submit" class="btn btn-primary btn-send" id="quote-send" hidden>
+              <svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg>
+              <span data-i18n="btn.sendMail">Send</span>
             </button>
           </div>
 
@@ -294,6 +339,41 @@
         <a class="contact-link" dir="ltr" href="https://wa.me/972559112028" target="_blank" rel="noopener" data-track="whatsapp">055-9112028</a>
       </p>
       <p class="contact-caption" data-i18n="footer.caption">Tap the number to message us on WhatsApp.</p>
+
+      <div class="contact-actions">
+        <a class="btn btn-primary" href="https://wa.me/972559112028" target="_blank" rel="noopener" data-track="whatsapp">
+          <svg class="icon" aria-hidden="true"><use href="#i-chat"/></svg>
+          <span data-i18n="contact.whatsapp">WhatsApp</span>
+        </a>
+        <a class="btn btn-ghost" href="mailto:eldarhay33@gmail.com">
+          <svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg>
+          <span><span data-i18n="contact.email">Email</span>: <bdi dir="ltr">eldarhay33@gmail.com</bdi></span>
+        </a>
+      </div>
+
+      <form class="contact-form glass" id="contact-form" novalidate autocomplete="off">
+        <h3 data-i18n="contact.title">Contact us</h3>
+        <p class="hint" data-i18n="contact.sub">Message us on WhatsApp, email us, or send a note right here – no apps needed.</p>
+        <label class="field">
+          <span class="field-label" data-i18n="contact.name">Your name</span>
+          <input type="text" name="name" maxlength="100" autocomplete="name">
+        </label>
+        <label class="field">
+          <span class="field-label" data-i18n="contact.reach">Phone or email (so we can reply)</span>
+          <input type="text" name="reach" maxlength="120" autocomplete="email" dir="auto">
+        </label>
+        <label class="field">
+          <span class="field-label" data-i18n="contact.message">Your message</span>
+          <textarea name="message" rows="4" maxlength="1500"></textarea>
+        </label>
+        <input type="text" name="_honey" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <p class="form-error" id="contact-error" role="alert" hidden></p>
+        <p class="form-status" id="contact-status" role="status" hidden></p>
+        <button type="submit" class="btn btn-primary" id="contact-send">
+          <svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg>
+          <span data-i18n="contact.send">Send message</span>
+        </button>
+      </form>
       <div class="footer-bottom">
         <span>© <span id="year">2026</span> DCreator · <span data-i18n="footer.rights">All rights reserved</span></span>
         <button type="button" class="admin-link" id="admin-open">
@@ -451,6 +531,7 @@
   <script defer src="js/analytics.js"></script>
   <script defer src="js/effects.js"></script>
   <script defer src="js/portfolio.js"></script>
+  <script defer src="js/contact.js"></script>
   <script defer src="js/questionnaire.js"></script>
   <script defer src="js/admin.js"></script>
   <script defer src="js/main.js"></script>

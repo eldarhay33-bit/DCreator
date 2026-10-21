@@ -37,6 +37,9 @@
   --accent-tint: rgba(0, 255, 136, .10);
   --on-accent: #04130d;
   --d-color: #00ff88;
+  --orb-1: rgba(0, 229, 255, .20);
+  --orb-2: rgba(0, 255, 136, .15);
+  --orb-3: rgba(70, 120, 255, .15);
   --shadow: 0 12px 40px rgba(0, 0, 0, .45);
   --glow: 0 0 26px rgba(0, 255, 136, .28);
   --logo-glow: drop-shadow(0 0 3px rgba(0, 255, 136, .20)) drop-shadow(0 0 4px rgba(0, 229, 255, .16));
@@ -62,6 +65,9 @@
   --accent-tint: rgba(0, 190, 160, .12);
   --on-accent: #032018;
   --d-color: #00c46f;
+  --orb-1: rgba(0, 200, 255, .38);
+  --orb-2: rgba(0, 225, 150, .26);
+  --orb-3: rgba(90, 140, 255, .24);
   --shadow: 0 12px 36px rgba(20, 90, 130, .14);
   --glow: 0 6px 22px rgba(0, 200, 190, .35);
   --logo-glow: drop-shadow(0 2px 4px rgba(0, 110, 140, .22));
@@ -107,8 +113,23 @@ html[data-theme="night"][data-fx="on"] body::after {
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  background: repeating-linear-gradient(to bottom, rgba(0, 255, 136, .035) 0 1px, transparent 1px 4px);
+  background: repeating-linear-gradient(to bottom, rgba(0, 255, 136, .022) 0 1px, transparent 1px 4px);
 }
+
+/* aurora: slow drifting colour fields, nudged by the mouse (see effects.js) */
+.aurora { position: fixed; inset: 0; z-index: -2; overflow: hidden; pointer-events: none; }
+html[data-fx="off"] .aurora { display: none; }
+.orb {
+  position: absolute; border-radius: 50%;
+  translate: calc(var(--mx, 0px) * var(--k, 1)) calc(var(--my, 0px) * var(--k, 1));
+  will-change: transform, translate;
+}
+.o1 { --k: 1;    width: 64vmax; height: 64vmax; top: -28vmax; right: -20vmax; background: radial-gradient(circle, var(--orb-1), transparent 66%); animation: drift1 34s ease-in-out infinite alternate; }
+.o2 { --k: -1.4; width: 54vmax; height: 54vmax; top: 16vh; left: -24vmax;     background: radial-gradient(circle, var(--orb-2), transparent 66%); animation: drift2 41s ease-in-out infinite alternate; }
+.o3 { --k: .8;   width: 50vmax; height: 50vmax; bottom: -26vmax; right: 8vw;  background: radial-gradient(circle, var(--orb-3), transparent 66%); animation: drift3 47s ease-in-out infinite alternate; }
+@keyframes drift1 { to { transform: translate(-10vmax, 12vmax) scale(1.1); } }
+@keyframes drift2 { to { transform: translate(14vmax, -8vmax) scale(.92); } }
+@keyframes drift3 { to { transform: translate(-12vmax, -10vmax) scale(1.12); } }
 
 #fx-canvas {
   position: fixed;
@@ -305,6 +326,15 @@ html[data-theme="day"] #theme-toggle .icon-moon { display: block; }
 .service p { color: var(--muted); }
 
 /* ---------- 6. Portfolio ---------- */
+.portfolio-note {
+  display: flex; align-items: flex-start; justify-content: center; gap: 10px;
+  max-width: 640px; margin: -18px auto 26px; text-align: center; color: var(--muted); font-size: .95rem;
+}
+.portfolio-note .icon { width: 18px; height: 18px; margin-top: 3px; color: var(--accent-2); }
+.portfolio-toggle-wrap { display: flex; justify-content: center; }
+.portfolio-toggle .icon { transform: rotate(90deg); transition: transform .3s var(--ease); }
+.portfolio-toggle[aria-expanded="true"] .icon { transform: rotate(-90deg); }
+#portfolio-panel { margin-top: 30px; animation: stepIn .45s var(--ease); }
 .filters { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 30px; }
 .chip {
   padding: .5rem 1.25rem; border-radius: 999px;
@@ -407,7 +437,7 @@ html[data-theme="day"] #theme-toggle .icon-moon { display: block; }
 
 .field { display: block; margin-top: 16px; }
 .field-label { display: block; font-size: .9rem; color: var(--muted); margin-bottom: 6px; font-weight: 500; }
-.field input[type="text"], .field input[type="url"], .field input[type="password"], .field textarea, .field select,
+.field input[type="text"], .field input[type="email"], .field input[type="url"], .field input[type="password"], .field textarea, .field select,
 .image-inputs input[type="url"] {
   width: 100%; padding: .8rem 1rem;
   border: 1px solid var(--border); border-radius: var(--radius-sm);
@@ -484,6 +514,11 @@ html[data-theme="day"] .form-error { color: #b3261e; background: rgba(255, 70, 7
   50% { box-shadow: 0 0 0 8px rgba(0, 255, 136, .08), var(--glow); }
 }
 .contact-caption { margin-top: 12px; color: var(--muted); }
+.contact-actions { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 26px; }
+.contact-form { width: min(560px, 100%); margin: 36px auto 0; padding: clamp(20px, 4vw, 32px); text-align: start; }
+.contact-form h3 { font-size: 1.35rem; margin-bottom: 4px; }
+.contact-form .btn { margin-top: 20px; }
+.hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
 .footer-bottom {
   margin-top: clamp(36px, 6vw, 56px); padding-top: 20px; border-top: 1px solid var(--border);
   display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between; align-items: center;
@@ -634,7 +669,9 @@ html[data-theme="day"] .stat .value { background: linear-gradient(135deg, #00a86
   .wizard-actions { flex-wrap: wrap; }
   .wizard-actions .spacer { display: none; }
   .wizard-actions .btn { flex: 1 1 auto; }
-  #quote-send { order: -1; flex-basis: 100%; }
+  .wizard-actions .btn-send { order: -1; flex-basis: 100%; }
+  .wizard-actions #quote-send { order: -2; }
+  .contact-actions .btn { width: 100%; }
 }
 
 @media (max-width: 350px) {
