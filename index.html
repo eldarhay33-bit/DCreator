@@ -1,0 +1,458 @@
+<!doctype html>
+<html lang="en" dir="ltr" data-theme="night" data-fx="on">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>DCreator – Websites, Browser Games &amp; 3D Simulations</title>
+  <meta name="description" content="DCreator – Digital Creator. Advanced digital solutions: website building, interactive browser games and 3D simulations.">
+  <meta name="theme-color" content="#07090d">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M13.3 40.16A38 38 0 0 1 86.7 40.16' fill='none' stroke='%2300ff88' stroke-width='12' stroke-linecap='round'/%3E%3Cpath d='M13.3 59.84A38 38 0 0 0 86.7 59.84' fill='none' stroke='%2300e5ff' stroke-width='12' stroke-linecap='round'/%3E%3C/svg%3E">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Rubik:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- Apply saved theme / language before first paint (no flash). -->
+  <script>
+    (function () {
+      try {
+        var p = JSON.parse(localStorage.getItem('dc_prefs') || '{}'), d = document.documentElement;
+        if (p.theme === 'day' || p.theme === 'night') d.setAttribute('data-theme', p.theme);
+        if (p.fx === false) d.setAttribute('data-fx', 'off');
+        if (/^(en|he|ar|es|zh)$/.test(p.lang)) {
+          d.setAttribute('lang', p.lang);
+          d.setAttribute('dir', (p.lang === 'he' || p.lang === 'ar') ? 'rtl' : 'ltr');
+        }
+      } catch (e) { /* storage unavailable – defaults apply */ }
+    })();
+  </script>
+</head>
+
+<body>
+  <!-- ===== Icon sprite ===== -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></symbol>
+    <symbol id="i-zap" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+    <symbol id="i-web" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></symbol>
+    <symbol id="i-store" viewBox="0 0 24 24"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></symbol>
+    <symbol id="i-game" viewBox="0 0 24 24"><path d="M6 11h4M8 9v4"/><path d="M15 12h.01M18 10h.01"/><path d="M17.32 5H6.68a4 4 0 0 0-3.98 3.59C2.6 9.42 2 14.46 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.41-1.41A2 2 0 0 1 9.83 16h4.34a2 2 0 0 1 1.41.59L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.55-.6-6.58-.69-7.26A4 4 0 0 0 17.32 5z"/></symbol>
+    <symbol id="i-sim" viewBox="0 0 24 24"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></symbol>
+    <symbol id="i-link" viewBox="0 0 24 24"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+    <symbol id="i-edit" viewBox="0 0 24 24"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></symbol>
+  </svg>
+
+  <!-- Built-in SVG logo: upper arc (D) neon green, lower arc (C) electric cyan -->
+  <template id="logo-svg-tpl">
+    <svg class="logo-svg" viewBox="0 0 100 100" role="img" aria-label="DCreator logo">
+      <path class="arc-d" d="M13.3 40.16A38 38 0 0 1 86.7 40.16"/>
+      <path class="arc-c" d="M13.3 59.84A38 38 0 0 0 86.7 59.84"/>
+    </svg>
+  </template>
+
+  <canvas id="fx-canvas" aria-hidden="true"></canvas>
+  <a class="skip-link" href="#main" data-i18n="ui.skip">Skip to content</a>
+
+  <!-- ===== Header ===== -->
+  <header class="site-header" id="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="#top" aria-label="DCreator">
+        <span class="brand-logo" data-logo="header"></span>
+        <span class="brand-text">
+          <span class="wordmark"><b>D</b>Creator</span>
+          <span class="slogan-mini">DIGITAL CREATOR</span>
+        </span>
+      </a>
+
+      <nav class="main-nav" id="main-nav" data-i18n-aria="nav.label" aria-label="Main">
+        <a href="#services" data-i18n="nav.services">What we build</a>
+        <a href="#portfolio" data-i18n="nav.portfolio">Portfolio</a>
+        <a href="#quote" data-i18n="nav.quote" data-track="quiz">Get a quote</a>
+        <a href="#contact" data-i18n="nav.contact">Contact</a>
+      </nav>
+
+      <div class="controls">
+        <label class="lang-wrap">
+          <span class="sr-only" data-i18n="ui.language">Language</span>
+          <select id="lang-select" class="lang-select"></select>
+        </label>
+        <button type="button" class="icon-btn" id="theme-toggle">
+          <svg class="icon icon-sun" aria-hidden="true"><use href="#i-sun"/></svg>
+          <svg class="icon icon-moon" aria-hidden="true"><use href="#i-moon"/></svg>
+        </button>
+        <button type="button" class="icon-btn" id="fx-toggle" data-state="on">
+          <svg class="icon" aria-hidden="true"><use href="#i-zap"/></svg>
+        </button>
+        <button type="button" class="icon-btn nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="main-nav" data-i18n-aria="nav.menu">
+          <svg class="icon icon-open" aria-hidden="true"><use href="#i-menu"/></svg>
+          <svg class="icon icon-close" aria-hidden="true"><use href="#i-x"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- ===== Hero ===== -->
+    <section class="hero" id="top">
+      <div class="container hero-inner">
+        <div class="lockup">
+          <div class="hero-logo" data-logo="hero"></div>
+          <h1 class="wordmark xl"><b>D</b>Creator</h1>
+          <p class="slogan"><span class="g">D</span>IGITAL <span class="c">C</span>REATOR</p>
+        </div>
+        <p class="hero-sub" data-i18n="hero.subtitle">Advanced digital solutions – websites, interactive browser games and 3D simulations, built from idea to launch.</p>
+        <div class="hero-cta">
+          <a class="btn btn-primary" href="#quote" data-track="quiz">
+            <span data-i18n="hero.cta">Get a quote</span>
+            <svg class="icon flip-rtl" aria-hidden="true"><use href="#i-arrow"/></svg>
+          </a>
+          <a class="btn btn-ghost" href="#portfolio" data-i18n="hero.cta2">View portfolio</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Services ===== -->
+    <section class="section" id="services">
+      <div class="container">
+        <header class="section-head">
+          <h2 data-i18n="services.title">What we build</h2>
+          <p data-i18n="services.sub">Three specialties, one creative partner.</p>
+        </header>
+        <div class="service-grid">
+          <article class="glass service">
+            <span class="service-icon"><svg class="icon" aria-hidden="true"><use href="#i-web"/></svg></span>
+            <h3 data-i18n="svc.web.t">Websites</h3>
+            <p data-i18n="svc.web.d">Business sites and smart stores that look sharp, load fast and turn visitors into customers.</p>
+          </article>
+          <article class="glass service">
+            <span class="service-icon"><svg class="icon" aria-hidden="true"><use href="#i-game"/></svg></span>
+            <h3 data-i18n="svc.game.t">Browser games</h3>
+            <p data-i18n="svc.game.d">Interactive games that run instantly in any browser – no download, on any device.</p>
+          </article>
+          <article class="glass service">
+            <span class="service-icon"><svg class="icon" aria-hidden="true"><use href="#i-sim"/></svg></span>
+            <h3 data-i18n="svc.sim.t">3D simulations</h3>
+            <p data-i18n="svc.sim.d">Real-time 3D visualizations and simulations that bring products and ideas to life.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Portfolio ===== -->
+    <section class="section" id="portfolio">
+      <div class="container">
+        <header class="section-head">
+          <h2 data-i18n="portfolio.title">Portfolio</h2>
+          <p data-i18n="portfolio.sub">Live projects – open any card to see it in action.</p>
+        </header>
+        <div class="filters" id="portfolio-filters" role="group" data-i18n-aria="portfolio.filters">
+          <button type="button" class="chip is-active" data-filter="all" aria-pressed="true" data-i18n="filter.all">All</button>
+          <button type="button" class="chip" data-filter="web" aria-pressed="false" data-i18n="filter.web">Websites</button>
+          <button type="button" class="chip" data-filter="game" aria-pressed="false" data-i18n="filter.game">Games</button>
+          <button type="button" class="chip" data-filter="sim" aria-pressed="false" data-i18n="filter.sim">Simulations</button>
+        </div>
+        <div class="card-grid" id="portfolio-grid"></div>
+        <p class="empty glass" id="portfolio-empty" hidden data-i18n="portfolio.empty">New projects are on the way – check back soon.</p>
+      </div>
+    </section>
+
+    <!-- ===== Questionnaire ===== -->
+    <section class="section" id="quote">
+      <div class="container narrow">
+        <header class="section-head">
+          <h2 data-i18n="quote.title">Get a quote</h2>
+          <p data-i18n="quote.sub">Answer four quick steps and your request opens straight in WhatsApp.</p>
+        </header>
+
+        <form class="wizard glass" id="quote-form" novalidate autocomplete="off">
+          <ol class="progress" id="quote-progress">
+            <li data-step="1"><span class="dot">1</span><span class="lbl" data-i18n="quote.step1">Project</span></li>
+            <li data-step="2"><span class="dot">2</span><span class="lbl" data-i18n="quote.step2">Budget</span></li>
+            <li data-step="3"><span class="dot">3</span><span class="lbl" data-i18n="quote.step3">Timeline</span></li>
+            <li data-step="4"><span class="dot">4</span><span class="lbl" data-i18n="quote.step4">Details</span></li>
+          </ol>
+
+          <!-- Step 1 -->
+          <fieldset class="step" data-step="1">
+            <legend data-i18n="q1.title">What would you like to build?</legend>
+            <div class="choice-grid" id="type-choices">
+              <label class="choice"><input type="radio" name="type" value="web"><span class="choice-body"><svg class="icon" aria-hidden="true"><use href="#i-web"/></svg><span data-i18n="q1.web">Business / corporate website</span></span></label>
+              <label class="choice"><input type="radio" name="type" value="store"><span class="choice-body"><svg class="icon" aria-hidden="true"><use href="#i-store"/></svg><span data-i18n="q1.store">Smart store</span></span></label>
+              <label class="choice"><input type="radio" name="type" value="game"><span class="choice-body"><svg class="icon" aria-hidden="true"><use href="#i-game"/></svg><span data-i18n="q1.game">Browser game</span></span></label>
+              <label class="choice"><input type="radio" name="type" value="sim"><span class="choice-body"><svg class="icon" aria-hidden="true"><use href="#i-sim"/></svg><span data-i18n="q1.sim">3D simulation</span></span></label>
+            </div>
+            <label class="field">
+              <span class="field-label" data-i18n="q1.otherLabel">Or describe your idea in your own words</span>
+              <textarea name="typeOther" rows="3" maxlength="600" data-i18n-placeholder="q1.otherPh" placeholder="Tell us about your project…"></textarea>
+            </label>
+          </fieldset>
+
+          <!-- Step 2 -->
+          <fieldset class="step" data-step="2" hidden>
+            <legend data-i18n="q2.title">What is your estimated budget?</legend>
+            <p class="hint" data-i18n="q2.sub">Write an amount, and choose how it should be read.</p>
+            <div class="combo">
+              <label class="field grow">
+                <span class="field-label" data-i18n="q2.label">Budget</span>
+                <input type="text" name="budget" maxlength="80" data-i18n-placeholder="q2.ph" placeholder="e.g. 5,000 ₪">
+              </label>
+              <div class="seg" id="budget-seg" role="group" data-i18n-aria="q2.label">
+                <label class="seg-opt"><input type="radio" name="budgetMode" value="upto"><span data-i18n="q2.upto">Up to…</span></label>
+                <label class="seg-opt"><input type="radio" name="budgetMode" value="around"><span data-i18n="q2.around">Around…</span></label>
+                <label class="seg-opt"><input type="radio" name="budgetMode" value="over"><span data-i18n="q2.over">Over…</span></label>
+              </div>
+            </div>
+          </fieldset>
+
+          <!-- Step 3 -->
+          <fieldset class="step" data-step="3" hidden>
+            <legend data-i18n="q3.title">Timeline and urgency</legend>
+            <div class="note">
+              <svg class="icon" aria-hidden="true"><use href="#i-info"/></svg>
+              <p data-i18n="q3.note">The further out the deadline, the lower the price. The faster you need it, the higher the price.</p>
+            </div>
+            <div class="combo">
+              <label class="field grow">
+                <span class="field-label" data-i18n="q3.label">Timeline</span>
+                <input type="text" name="timeline" maxlength="120" data-i18n-placeholder="q3.ph" placeholder="e.g. I need it live by December">
+              </label>
+              <div class="seg seg-wide" id="timeline-seg" role="group" data-i18n-aria="q3.label">
+                <label class="seg-opt"><input type="radio" name="timelineMode" value="slow"><span data-i18n="q3.slow">Slow (a few months)</span></label>
+                <label class="seg-opt"><input type="radio" name="timelineMode" value="normal"><span data-i18n="q3.normal">Regular (2 weeks – 1 month)</span></label>
+                <label class="seg-opt"><input type="radio" name="timelineMode" value="fast"><span data-i18n="q3.fast">Fast (as the client requires)</span></label>
+              </div>
+            </div>
+          </fieldset>
+
+          <!-- Step 4 -->
+          <fieldset class="step" data-step="4" hidden>
+            <legend data-i18n="q4.title">Your details</legend>
+            <label class="field">
+              <span class="field-label" data-i18n="q4.name">Full name / business name</span>
+              <input type="text" name="name" maxlength="100" autocomplete="name">
+            </label>
+            <label class="field">
+              <span class="field-label" data-i18n="q4.notes">Additional notes</span>
+              <textarea name="notes" rows="4" maxlength="1000" data-i18n-placeholder="q4.notesPh" placeholder="Anything else we should know?"></textarea>
+            </label>
+            <details class="preview">
+              <summary data-i18n="q4.preview">Preview the WhatsApp message</summary>
+              <pre id="quote-preview"></pre>
+            </details>
+          </fieldset>
+
+          <p class="form-error" id="quote-error" role="alert" hidden></p>
+
+          <div class="wizard-actions">
+            <button type="button" class="btn btn-ghost" id="quote-back" hidden>
+              <svg class="icon flip-rtl icon-back" aria-hidden="true"><use href="#i-arrow"/></svg>
+              <span data-i18n="btn.back">Back</span>
+            </button>
+            <span class="spacer"></span>
+            <button type="button" class="btn btn-primary" id="quote-next">
+              <span data-i18n="btn.next">Next</span>
+              <svg class="icon flip-rtl" aria-hidden="true"><use href="#i-arrow"/></svg>
+            </button>
+            <button type="submit" class="btn btn-primary btn-wa" id="quote-send" hidden>
+              <svg class="icon" aria-hidden="true"><use href="#i-chat"/></svg>
+              <span data-i18n="btn.send">Send via WhatsApp</span>
+            </button>
+          </div>
+
+          <div class="wizard-done" id="quote-done" hidden>
+            <span class="done-icon"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span>
+            <h3 data-i18n="quote.done.title">Opening WhatsApp…</h3>
+            <p data-i18n="quote.done.text">Your answers are in a ready-to-send message. If WhatsApp did not open, use the button below.</p>
+            <div class="done-actions">
+              <a class="btn btn-primary btn-wa" id="quote-done-link" href="#" target="_blank" rel="noopener">
+                <svg class="icon" aria-hidden="true"><use href="#i-chat"/></svg>
+                <span data-i18n="quote.done.open">Open WhatsApp</span>
+              </a>
+              <button type="button" class="btn btn-ghost" id="quote-restart" data-i18n="btn.restart">Start over</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===== Footer ===== -->
+  <footer class="site-footer" id="contact">
+    <div class="container footer-inner">
+      <p class="contact-main" lang="he" dir="rtl">
+        <span>צור קשר:</span>
+        <a class="contact-link" dir="ltr" href="https://wa.me/972559112028" target="_blank" rel="noopener" data-track="whatsapp">055-9112028</a>
+      </p>
+      <p class="contact-caption" data-i18n="footer.caption">Tap the number to message us on WhatsApp.</p>
+      <div class="footer-bottom">
+        <span>© <span id="year">2026</span> DCreator · <span data-i18n="footer.rights">All rights reserved</span></span>
+        <button type="button" class="admin-link" id="admin-open">
+          <svg class="icon" aria-hidden="true"><use href="#i-lock"/></svg>
+          <span data-i18n="footer.admin">Admin</span>
+        </button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===== Admin: login ===== -->
+  <dialog id="admin-login" class="dialog dialog-sm" data-i18n-scope="admin">
+    <form method="dialog" id="admin-login-form" class="dialog-body" novalidate>
+      <h2 data-i18n="admin.login.title">Owner access</h2>
+      <label class="field">
+        <span class="field-label" data-i18n="admin.login.label">Access code</span>
+        <input type="password" id="admin-code" autocomplete="off" autocapitalize="off" spellcheck="false">
+      </label>
+      <p class="form-error" id="admin-login-error" role="alert" hidden></p>
+      <div class="dialog-actions">
+        <button type="button" class="btn btn-ghost" id="admin-login-cancel" data-i18n="admin.cancel">Cancel</button>
+        <button type="submit" class="btn btn-primary" data-i18n="admin.login.submit">Enter</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- ===== Admin: panel ===== -->
+  <dialog id="admin-panel" class="dialog dialog-lg" data-i18n-scope="admin">
+    <div class="admin-shell">
+      <header class="admin-head">
+        <h2 data-i18n="admin.title">Admin panel</h2>
+        <div class="admin-head-actions">
+          <button type="button" class="btn btn-ghost btn-sm" id="admin-logout" data-i18n="admin.logout">Log out</button>
+          <button type="button" class="icon-btn" id="admin-close" data-i18n-aria="admin.close"><svg class="icon" aria-hidden="true"><use href="#i-x"/></svg></button>
+        </div>
+      </header>
+
+      <div class="tabs" role="tablist">
+        <button type="button" role="tab" class="tab is-active" id="tab-portfolio" aria-selected="true" aria-controls="pane-portfolio" data-i18n="admin.tab.portfolio">Portfolio links</button>
+        <button type="button" role="tab" class="tab" id="tab-analytics" aria-selected="false" aria-controls="pane-analytics" data-i18n="admin.tab.analytics">Analytics</button>
+      </div>
+
+      <div class="admin-body">
+        <!-- Portfolio manager -->
+        <section id="pane-portfolio" role="tabpanel" aria-labelledby="tab-portfolio">
+          <div class="admin-grid">
+            <form id="link-form" class="panel" novalidate>
+              <h3 id="link-form-title" data-i18n="f.add">Add a new link</h3>
+
+              <div class="row-2">
+                <label class="field">
+                  <span class="field-label" data-i18n="f.srcLang">I am writing in</span>
+                  <select id="f-lang"></select>
+                </label>
+                <label class="field">
+                  <span class="field-label" data-i18n="f.category">Category</span>
+                  <select id="f-category">
+                    <option value="web" data-i18n="filter.web">Websites</option>
+                    <option value="game" data-i18n="filter.game">Games</option>
+                    <option value="sim" data-i18n="filter.sim">Simulations</option>
+                  </select>
+                </label>
+              </div>
+
+              <label class="field">
+                <span class="field-label" data-i18n="f.title">Title</span>
+                <input type="text" id="f-title" maxlength="80">
+              </label>
+              <label class="field">
+                <span class="field-label" data-i18n="f.desc">Description</span>
+                <textarea id="f-desc" rows="3" maxlength="400"></textarea>
+              </label>
+              <label class="field">
+                <span class="field-label" data-i18n="f.url">Project URL</span>
+                <input type="url" id="f-url" placeholder="https://" inputmode="url" dir="ltr">
+              </label>
+
+              <div class="field">
+                <span class="field-label" data-i18n="f.image">Preview image / logo (optional)</span>
+                <div class="image-row">
+                  <div class="image-preview" id="f-image-preview" aria-hidden="true"></div>
+                  <div class="image-inputs">
+                    <input type="url" id="f-image-url" placeholder="https://…/image.png" dir="ltr" data-i18n-aria="f.imageUrl">
+                    <div class="image-buttons">
+                      <label class="btn btn-ghost btn-sm file-btn">
+                        <span data-i18n="f.imageUpload">Upload image</span>
+                        <input type="file" id="f-image-file" accept="image/*" hidden>
+                      </label>
+                      <button type="button" class="btn btn-ghost btn-sm" id="f-image-clear" data-i18n="f.imageClear">Remove image</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <label class="check">
+                <input type="checkbox" id="f-auto" checked>
+                <span data-i18n="f.auto">Auto-translate to all languages</span>
+              </label>
+
+              <details class="translations" id="f-translations">
+                <summary data-i18n="f.translations">Translations (editable)</summary>
+                <div id="f-translation-rows"></div>
+              </details>
+
+              <p class="form-error" id="link-form-error" role="alert" hidden></p>
+              <p class="form-status" id="link-form-status" role="status" hidden></p>
+
+              <div class="dialog-actions">
+                <button type="button" class="btn btn-ghost" id="f-cancel" hidden data-i18n="f.cancel">Cancel edit</button>
+                <button type="submit" class="btn btn-primary" id="f-save" data-i18n="f.save">Save link</button>
+              </div>
+            </form>
+
+            <div class="admin-list-col">
+              <div class="panel publish-box" id="publish-box">
+                <h3 data-i18n="pub.title">Publishing</h3>
+                <p id="publish-status" class="publish-status"></p>
+                <p class="hint" data-i18n="pub.howto">To show your changes to every visitor, download the file below and replace js/portfolio-data.js on your hosting.</p>
+                <div class="publish-actions">
+                  <button type="button" class="btn btn-primary btn-sm" id="pub-export">
+                    <svg class="icon" aria-hidden="true"><use href="#i-download"/></svg>
+                    <span data-i18n="pub.export">Download portfolio-data.js</span>
+                  </button>
+                  <button type="button" class="btn btn-ghost btn-sm" id="pub-reset" data-i18n="pub.reset">Discard local changes</button>
+                </div>
+              </div>
+              <div class="panel">
+                <h3 id="admin-list-title"></h3>
+                <ul class="admin-list" id="admin-list"></ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Analytics -->
+        <section id="pane-analytics" role="tabpanel" aria-labelledby="tab-analytics" hidden>
+          <div class="stat-grid" id="stat-grid"></div>
+          <div class="panel">
+            <h3 data-i18n="an.referrers">Traffic sources</h3>
+            <ul class="bar-list" id="referrer-list"></ul>
+          </div>
+          <p class="hint" data-i18n="an.note">Statistics are stored in this browser only. They show visits made from this device.</p>
+          <div class="dialog-actions start">
+            <button type="button" class="btn btn-ghost btn-sm" id="analytics-reset" data-i18n="an.reset">Reset analytics</button>
+            <span class="hint" id="analytics-since"></span>
+          </div>
+        </section>
+      </div>
+    </div>
+  </dialog>
+
+  <script defer src="js/config.js"></script>
+  <script defer src="js/portfolio-data.js"></script>
+  <script defer src="js/i18n.js"></script>
+  <script defer src="js/analytics.js"></script>
+  <script defer src="js/effects.js"></script>
+  <script defer src="js/portfolio.js"></script>
+  <script defer src="js/questionnaire.js"></script>
+  <script defer src="js/admin.js"></script>
+  <script defer src="js/main.js"></script>
+</body>
+</html>
