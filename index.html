@@ -10,7 +10,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Rubik:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Audiowide&family=Rubik:wght@400;500;600;700&display=swap">
   <link rel="stylesheet" href="css/style.css">
 
   <!-- Apply saved theme / language before first paint (no flash). -->
@@ -301,13 +301,13 @@
             <legend data-i18n="q2.title">What is your estimated budget?</legend>
             <label class="field">
               <span class="field-label"><span data-i18n="q2.country">Where are you from?</span> <b class="req" aria-hidden="true">*</b></span>
-              <input type="text" name="country" maxlength="60" autocomplete="country-name" aria-required="true" data-i18n-placeholder="q2.countryPh" placeholder="e.g. Israel">
+              <input type="text" name="country" maxlength="60" autocomplete="country-name" aria-required="true" data-i18n-placeholder="q2.countryPh" placeholder="e.g. United States">
             </label>
             <label class="field">
               <span class="field-label" data-i18n="q2.currency">Currency you would like to pay in</span>
               <select name="currency">
+                <option value="USD" selected>$ USD</option>
                 <option value="ILS">₪ ILS</option>
-                <option value="USD">$ USD</option>
                 <option value="EUR">€ EUR</option>
                 <option value="GBP">£ GBP</option>
                 <option value="CAD">C$ CAD</option>
@@ -326,7 +326,7 @@
             <div class="combo">
               <label class="field grow">
                 <span class="field-label" data-i18n="q2.label">Budget</span>
-                <input type="text" name="budget" maxlength="80" data-i18n-placeholder="q2.ph" placeholder="e.g. 5,000 ₪">
+                <input type="text" name="budget" maxlength="80" data-i18n-placeholder="q2.ph" placeholder="e.g. $5,000">
               </label>
               <div class="seg" id="budget-seg" role="group" data-i18n-aria="q2.label">
                 <label class="seg-opt"><input type="radio" name="budgetMode" value="upto"><span data-i18n="q2.upto">Up to…</span></label>
@@ -364,10 +364,6 @@
               <input type="text" name="name" maxlength="100" autocomplete="name">
             </label>
             <label class="field">
-              <span class="field-label" data-i18n="contact.reach">Phone or email (so we can reply)</span>
-              <input type="text" name="reach" maxlength="120" autocomplete="email" dir="auto">
-            </label>
-            <label class="field">
               <span class="field-label" data-i18n="q4.notes">Additional notes</span>
               <textarea name="notes" rows="4" maxlength="1000" data-i18n-placeholder="q4.notesPh" placeholder="Anything else we should know?"></textarea>
             </label>
@@ -389,13 +385,13 @@
               <span data-i18n="btn.next">Next</span>
               <svg class="icon flip-rtl" aria-hidden="true"><use href="#i-arrow"/></svg>
             </button>
-            <button type="button" class="btn btn-ghost btn-send" id="quote-send-wa" hidden>
+            <button type="button" class="btn btn-primary btn-send" id="quote-send-wa" hidden>
               <svg class="icon" aria-hidden="true"><use href="#i-chat"/></svg>
               <span data-i18n="btn.send">Send via WhatsApp</span>
             </button>
-            <button type="submit" class="btn btn-primary btn-send" id="quote-send" hidden>
+            <button type="submit" class="btn btn-ghost btn-send" id="quote-send" hidden>
               <svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg>
-              <span data-i18n="btn.sendMail">Send</span>
+              <span data-i18n="btn.sendMail">Send via email</span>
             </button>
           </div>
 
@@ -407,6 +403,10 @@
               <a class="btn btn-primary btn-wa" id="quote-done-link" href="#" target="_blank" rel="noopener">
                 <svg class="icon" aria-hidden="true"><use href="#i-chat"/></svg>
                 <span data-i18n="quote.done.open">Open WhatsApp</span>
+              </a>
+              <a class="btn btn-primary" id="quote-done-mail" href="#" hidden>
+                <svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg>
+                <span data-i18n="quote.done.openMail">Open email</span>
               </a>
               <button type="button" class="btn btn-ghost" id="quote-restart" data-i18n="btn.restart">Start over</button>
             </div>
@@ -444,20 +444,20 @@
           <input type="text" name="name" maxlength="100" autocomplete="name">
         </label>
         <label class="field">
-          <span class="field-label" data-i18n="contact.reach">Phone or email (so we can reply)</span>
-          <input type="text" name="reach" maxlength="120" autocomplete="email" dir="auto">
-        </label>
-        <label class="field">
           <span class="field-label" data-i18n="contact.message">Your message</span>
           <textarea name="message" rows="4" maxlength="1500"></textarea>
         </label>
-        <input type="text" name="_honey" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
         <p class="form-error" id="contact-error" role="alert" hidden></p>
-        <p class="form-status" id="contact-status" role="status" hidden></p>
-        <button type="submit" class="btn btn-primary" id="contact-send">
-          <svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg>
-          <span data-i18n="contact.send">Send message</span>
-        </button>
+        <div class="contact-send-row">
+          <button type="button" class="btn btn-primary" id="contact-wa">
+            <svg class="icon" aria-hidden="true"><use href="#i-chat"/></svg>
+            <span data-i18n="btn.send">Send via WhatsApp</span>
+          </button>
+          <button type="button" class="btn btn-ghost" id="contact-mail">
+            <svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg>
+            <span data-i18n="btn.sendMail">Send via email</span>
+          </button>
+        </div>
       </form>
       <div class="footer-bottom">
         <span>© <span id="year">2026</span> DCreator · <span data-i18n="footer.rights">All rights reserved</span></span>

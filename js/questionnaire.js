@@ -10,7 +10,7 @@
   const dots = Array.from(form.querySelectorAll("#quote-progress li"));
   const backBtn = document.getElementById("quote-back");
   const nextBtn = document.getElementById("quote-next");
-  const sendBtn = document.getElementById("quote-send");          // automatic email
+  const sendBtn = document.getElementById("quote-send");          // opens the email app
   const sendWaBtn = document.getElementById("quote-send-wa");     // opens WhatsApp
   const errorBox = document.getElementById("quote-error");
   const preview = document.getElementById("quote-preview");
@@ -34,14 +34,13 @@
       timeline: field("timeline").value.trim(),
       timelineMode: checked("timelineMode"),
       name: field("name").value.trim(),
-      reach: field("reach").value.trim(),
       notes: field("notes").value.trim()
     };
   }
 
   /* ---------------------------------------------------------- message */
-  function buildMessage() {
-    const lang = cfg.whatsappMessageLang === "ui" ? DC.i18n.lang : "he";
+  function buildMessage(forceLang) {
+    const lang = forceLang || (cfg.whatsappMessageLang === "ui" ? DC.i18n.lang : "he");
     const T = (key) => DC.i18n.t(key, lang);
     const d = read();
     const none = T("wa.none");
@@ -65,7 +64,6 @@
       "*" + T("wa.currency") + ":* " + (d.currency === "other" ? T("q2.currencyOther") : d.currency),
       "*" + T("wa.timeline") + ":* " + timeline,
       "*" + T("wa.name") + ":* " + (d.name || none),
-      "*" + T("wa.reach") + ":* " + (d.reach || none),
       "*" + T("wa.notes") + ":* " + (d.notes || none),
       "",
       "(" + T("wa.lang") + ": " + cfg.languages[DC.i18n.lang].name + ")"
@@ -79,13 +77,11 @@
   function showError(key) { errorBox.textContent = t(key); errorBox.hidden = false; }
   function clearError() { errorBox.hidden = true; errorBox.textContent = ""; }
 
-  /* needReach: the email route has no phone number attached, so we must ask for one */
-  function validate(step, needReach) {
+  function validate(step) {
     const d = read();
     if (step === 1 && !d.type && !d.typeOther) { showError("quote.err.type"); return false; }
     if (step === 2 && !d.country) { showError("quote.err.country"); field("country").focus(); return false; }
     if (step === TOTAL && !d.name) { showError("quote.err.name"); field("name").focus(); return false; }
-    if (step === TOTAL && needReach && !d.reach) { showError("quote.err.reach"); field("reach").focus(); return false; }
     clearError();
     return true;
   }
@@ -154,54 +150,51 @@
     document.getElementById("quote").scrollIntoView();
   }
 
-  function showDone(titleKey, textKey) {
+  const doneMail = document.getElementById("quote-done-mail");
+
+  /* kind: "wa" or "mail" – shows the matching message and fallback button */
+  function showDone(kind) {
     const title = done.querySelector("h3");
-    title.dataset.i18n = titleKey;
-    done.querySelector("p").dataset.i18n = textKey;
+    title.dataset.i18n = kind === "mail" ? "quote.doneMail.title" : "quote.done.title";
+    done.querySelector("p").dataset.i18n = kind === "mail" ? "quote.doneMail.text" : "quote.done.text";
     DC.i18n.apply(done);
+    doneLink.hidden = kind === "mail";
+    doneMail.hidden = kind !== "mail";
     doneLink.href = whatsappUrl();
+    doneMail.href = mailUrl();
     form.classList.add("is-done");
     done.hidden = false;
     title.tabIndex = -1;
     title.focus({ preventScroll: true });
   }
 
-  /* "Send" – delivered to the owner's inbox automatically, no app needed */
-  async function submit(e) {
+  /* mailto links are limited to about 2000 characters on Windows, and Hebrew
+     is long once encoded – so fall back to English labels, then to a trimmed text */
+  function mailUrl() {
+    const body = (lang) => buildMessage(lang).replace(/\*/g, "");
+    let url = DC.mail.mailtoUrl(cfg.mailSubject, body());
+    if (url.length > DC.mail.MAX_URL) url = DC.mail.mailtoUrl(cfg.mailSubject, body("en"));
+    return url.length > DC.mail.MAX_URL ? DC.mail.mailtoFit(cfg.mailSubject, body("en")) : url;
+  }
+
+  /* "Send via email" – opens the visitor's email app with the message written */
+  function submit(e) {
     e.preventDefault();
     if (current !== TOTAL) { goNext(); return; }   // Enter key on an earlier step
-    if (!validate(TOTAL, true)) return;
-
-    const d = read();
-    const label = sendBtn.querySelector("span");
-    sendBtn.disabled = true;
-    label.textContent = t("contact.sending");
-    try {
-      await DC.mail.send({
-        name: d.name,
-        reach: d.reach,
-        message: buildMessage().replace(/\*/g, ""),
-        language: cfg.languages[DC.i18n.lang].name
-      });
-      DC.analytics.track("quizSent");
-      showDone("quote.doneMail.title", "quote.doneMail.text");
-    } catch (err) {
-      showError("quote.err.send");
-    } finally {
-      sendBtn.disabled = false;
-      label.textContent = t("btn.sendMail");
-    }
+    if (!validate(TOTAL)) return;
+    DC.analytics.track("quizSent");
+    showDone("mail");
+    window.location.href = mailUrl();
   }
 
   /* "Send via WhatsApp" – opens a chat with the message already written */
   function sendWhatsapp() {
-    if (!validate(TOTAL, false)) return;
+    if (!validate(TOTAL)) return;
     DC.analytics.track("quizSent");
+    showDone("wa");
     const win = window.open(whatsappUrl(), "_blank");
-    if (win) win.opener = null;                    // if blocked, the button on the next screen still works
-    showDone("quote.done.title", "quote.done.text");
+    if (win) win.opener = null;                    // if blocked, the button on this screen still works
   }
-
   function init() {
     toggleableRadios(document.getElementById("budget-seg"));
     toggleableRadios(document.getElementById("timeline-seg"));

@@ -13,7 +13,7 @@
   --radius-sm: 12px;
   --header-h: 68px;
   --font-body: "Rubik", "Segoe UI", system-ui, -apple-system, "Noto Sans Hebrew", "Noto Sans Arabic", "PingFang SC", "Microsoft YaHei", sans-serif;
-  --font-brand: "Orbitron", "Rubik", system-ui, sans-serif;
+  --font-brand: "Audiowide", "Rubik", system-ui, sans-serif;
   --ease: cubic-bezier(.2, .7, .2, 1);
 }
 
@@ -213,11 +213,11 @@ img { max-width: 100%; }
 
 /* ---------- Brand marks ---------- */
 .wordmark, .slogan, .slogan-mini { direction: ltr; unicode-bidi: isolate; font-family: var(--font-brand); }
-.wordmark { font-weight: 800; letter-spacing: .02em; line-height: 1.05; }
+.wordmark { font-weight: 400; letter-spacing: .02em; line-height: 1.05; }
 .wordmark b { font-weight: inherit; color: var(--d-color); }
 html[data-theme="night"] .wordmark b { text-shadow: 0 0 8px rgba(0, 255, 136, .22); }
 .wordmark.xl { font-size: clamp(2.8rem, 10vw, 5.6rem); }
-.slogan, .slogan-mini { text-transform: uppercase; color: var(--muted); font-weight: 600; }
+.slogan, .slogan-mini { text-transform: uppercase; color: var(--muted); font-weight: 400; }
 .slogan { font-size: clamp(.72rem, 2.2vw, 1rem); letter-spacing: .5em; padding-left: .5em; margin-top: .6rem; }
 .slogan .g { color: var(--d-color); }
 .slogan .c { color: var(--accent-2); }
@@ -547,7 +547,8 @@ html[data-theme="day"] .form-error { color: #b3261e; background: rgba(255, 70, 7
 .contact-actions { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 26px; }
 .contact-form { width: min(560px, 100%); margin: 36px auto 0; padding: clamp(20px, 4vw, 32px); text-align: start; }
 .contact-form h3 { font-size: 1.35rem; margin-bottom: 4px; }
-.contact-form .btn { margin-top: 20px; }
+.contact-send-row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 20px; }
+.contact-send-row .btn { flex: 1 1 200px; }
 .hp { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; border: 0; opacity: 0; overflow: hidden; clip-path: inset(50%); pointer-events: none; }
 .footer-bottom {
   margin-top: clamp(36px, 6vw, 56px); padding-top: 20px; border-top: 1px solid var(--border);
@@ -710,7 +711,6 @@ html[data-theme="day"] .stat .value { background: linear-gradient(135deg, #00a86
   .wizard-actions .spacer { display: none; }
   .wizard-actions .btn { flex: 1 1 auto; }
   .wizard-actions .btn-send { order: -1; flex-basis: 100%; }
-  .wizard-actions #quote-send { order: -2; }
   .contact-actions .btn { width: 100%; }
 }
 

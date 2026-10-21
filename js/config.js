@@ -19,12 +19,7 @@ DC.config = {
 
   /* ---- Email ------------------------------------------------------------ */
   contactEmail: "eldarhay33@gmail.com",
-  /* The contact form and the questionnaire "Send" button post here (FormSubmit),
-     which forwards the message to your inbox – visitors need no mail app.
-     First time only: send one test message, then click the activation link
-     FormSubmit emails you. */
-  formEndpoint: "https://formsubmit.co/ajax/eldarhay33@gmail.com",
-  formSubject: "DCreator – פנייה חדשה מהאתר",
+  mailSubject: "DCreator – פנייה חדשה מהאתר",
 
   /* ---- Logo ------------------------------------------------------------- */
   /* Put your own logo file in the assets folder and point to it here.

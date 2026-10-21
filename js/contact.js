@@ -1,72 +1,61 @@
 /* ==========================================================================
-   DCreator – automatic email (contact form + questionnaire "Send")
+   DCreator – contact form
+   Both buttons open the visitor's own WhatsApp / email app with the message
+   already written, addressed to you. Nothing is sent from the server.
    ========================================================================== */
 (function () {
   const cfg = DC.config;
   const t = (key) => DC.i18n.t(key);
 
-  /* Posts the fields to the form relay. Rejects if it could not be delivered. */
-  async function send(fields) {
-    const ctrl = new AbortController();
-    const timer = setTimeout(() => ctrl.abort(), 15000);
-    try {
-      const res = await fetch(cfg.formEndpoint, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify(Object.assign({ _subject: cfg.formSubject, _template: "table", _captcha: "false" }, fields)),
-        signal: ctrl.signal
-      });
-      const json = await res.json().catch(() => ({}));
-      if (!res.ok || !(json.success === true || json.success === "true")) throw new Error(json.message || "send failed");
-    } finally { clearTimeout(timer); }
+  const whatsappUrl = (text) => cfg.whatsappUrl + "?text=" + encodeURIComponent(text);
+  const mailtoUrl = (subject, body) =>
+    "mailto:" + cfg.contactEmail + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
+
+  /* Windows mail links break above ~2000 characters, so long texts are trimmed to fit. */
+  const MAX_URL = 1900;
+  function mailtoFit(subject, body) {
+    let url = mailtoUrl(subject, body);
+    while (url.length > MAX_URL && body.length > 40) {
+      body = body.slice(0, Math.floor(body.length * 0.9)).trimEnd();
+      url = mailtoUrl(subject, body + "…");
+    }
+    return url;
   }
 
   function initForm() {
     const form = document.getElementById("contact-form");
     if (!form) return;
     const field = (name) => form.querySelector('[name="' + name + '"]');
-    const button = document.getElementById("contact-send");
-    const label = button.querySelector("span");
     const errorBox = document.getElementById("contact-error");
-    const status = document.getElementById("contact-status");
 
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
+    /* returns the message text, or null (and shows an error) when it is empty */
+    function compose() {
       errorBox.hidden = true;
-      status.hidden = true;
-
-      const name = field("name").value.trim();
-      const reach = field("reach").value.trim();
       const message = field("message").value.trim();
-
-      if (field("_honey").value) { form.reset(); return; }   // bot filled the hidden field
-      if (!message || !reach) {
+      if (!message) {
         errorBox.textContent = t("contact.err");
         errorBox.hidden = false;
-        return;
+        field("message").focus();
+        return null;
       }
+      const name = field("name").value.trim();
+      return (name ? name + "\n\n" : "") + message;
+    }
 
-      button.disabled = true;
-      label.textContent = t("contact.sending");
-      try {
-        await send({
-          name: name || "-",
-          reach,
-          message,
-          language: cfg.languages[DC.i18n.lang].name
-        });
-        form.reset();
-        status.textContent = t("contact.sent");
-        status.hidden = false;
-      } catch (err) {
-        errorBox.textContent = t("quote.err.send");
-        errorBox.hidden = false;
-      } finally {
-        button.disabled = false;
-        label.textContent = t("contact.send");
-      }
+    document.getElementById("contact-wa").addEventListener("click", () => {
+      const text = compose();
+      if (text === null) return;
+      DC.analytics.track("whatsapp");
+      const win = window.open(whatsappUrl(text), "_blank");
+      if (win) win.opener = null;
+    });
+
+    document.getElementById("contact-mail").addEventListener("click", () => {
+      const text = compose();
+      if (text === null) return;
+      window.location.href = mailtoFit(cfg.mailSubject, text);
     });
   }
 
-  DC.mail = { send, initForm };
+  DC.mail = { whatsappUrl, mailtoUrl, mailtoFit, MAX_URL, initForm };
 })();
