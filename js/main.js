@@ -99,6 +99,7 @@
     DC.analytics.init();
     DC.portfolio.init();
     DC.questionnaire.init();
+    DC.mail.initForm();
     DC.admin.init();
     initLanguageSelect();
     initNav();
@@ -106,7 +107,7 @@
     $("theme-toggle").addEventListener("click", () => setTheme(html.dataset.theme === "night" ? "day" : "night", true));
     $("fx-toggle").addEventListener("click", () => setFx(html.dataset.fx === "off", true));
 
-    setTheme(prefs.theme === "day" ? "day" : "night", false);
+    setTheme(prefs.theme === "night" ? "night" : "day", false);   // day (blue-white) is the default
     setFx(typeof prefs.fx === "boolean" ? prefs.fx : !reducedMotion, false);
     DC.i18n.setLang(cfg.languages[prefs.lang] ? prefs.lang : cfg.defaultLang, false);
   }

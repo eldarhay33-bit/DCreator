@@ -17,6 +17,15 @@ DC.config = {
      "ui"  = the language the visitor chose on the site */
   whatsappMessageLang: "he",
 
+  /* ---- Email ------------------------------------------------------------ */
+  contactEmail: "eldarhay33@gmail.com",
+  /* The contact form and the questionnaire "Send" button post here (FormSubmit),
+     which forwards the message to your inbox – visitors need no mail app.
+     First time only: send one test message, then click the activation link
+     FormSubmit emails you. */
+  formEndpoint: "https://formsubmit.co/ajax/eldarhay33@gmail.com",
+  formSubject: "DCreator – פנייה חדשה מהאתר",
+
   /* ---- Logo ------------------------------------------------------------- */
   /* Put your own logo file in the assets folder and point to it here.
        logoMode "svg"   – built-in neon circle logo (default)
@@ -52,12 +61,20 @@ DC.config = {
   adminMaxAttempts: 3,
   adminLockSeconds: 30,
 
+  /* ---- Visitor statistics (Netlify Functions, see netlify/functions) ----- */
+  trackEndpoint: "/api/track",
+  statsEndpoint: "/api/stats",
+
   /* ---- Storage keys (localStorage) -------------------------------------- */
   keys: {
     prefs: "dc_prefs",
     portfolio: "dc_portfolio",
     analytics: "dc_analytics",
+    lastPublished: "dc_lastpub",
+    github: "dc_github",
     adminSession: "dc_admin",
+    adminCode: "dc_admin_code",     // sessionStorage – needed to read /api/stats
+    owner: "dc_owner",              // marks the owner's browser: its visits are not counted remotely
     visitSession: "dc_visit"
   }
 };

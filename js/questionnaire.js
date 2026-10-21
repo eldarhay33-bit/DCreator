@@ -10,7 +10,8 @@
   const dots = Array.from(form.querySelectorAll("#quote-progress li"));
   const backBtn = document.getElementById("quote-back");
   const nextBtn = document.getElementById("quote-next");
-  const sendBtn = document.getElementById("quote-send");
+  const sendBtn = document.getElementById("quote-send");          // automatic email
+  const sendWaBtn = document.getElementById("quote-send-wa");     // opens WhatsApp
   const errorBox = document.getElementById("quote-error");
   const preview = document.getElementById("quote-preview");
   const done = document.getElementById("quote-done");
@@ -28,9 +29,12 @@
       typeOther: field("typeOther").value.trim(),
       budget: field("budget").value.trim(),
       budgetMode: checked("budgetMode"),
+      country: field("country").value.trim(),
+      currency: field("currency").value,
       timeline: field("timeline").value.trim(),
       timelineMode: checked("timelineMode"),
       name: field("name").value.trim(),
+      reach: field("reach").value.trim(),
       notes: field("notes").value.trim()
     };
   }
@@ -56,9 +60,12 @@
       T("wa.greeting"),
       "",
       "*" + T("wa.type") + ":* " + type,
+      "*" + T("wa.country") + ":* " + (d.country || none),
       "*" + T("wa.budget") + ":* " + budget,
+      "*" + T("wa.currency") + ":* " + (d.currency === "other" ? T("q2.currencyOther") : d.currency),
       "*" + T("wa.timeline") + ":* " + timeline,
       "*" + T("wa.name") + ":* " + (d.name || none),
+      "*" + T("wa.reach") + ":* " + (d.reach || none),
       "*" + T("wa.notes") + ":* " + (d.notes || none),
       "",
       "(" + T("wa.lang") + ": " + cfg.languages[DC.i18n.lang].name + ")"
@@ -72,10 +79,13 @@
   function showError(key) { errorBox.textContent = t(key); errorBox.hidden = false; }
   function clearError() { errorBox.hidden = true; errorBox.textContent = ""; }
 
-  function validate(step) {
+  /* needReach: the email route has no phone number attached, so we must ask for one */
+  function validate(step, needReach) {
     const d = read();
     if (step === 1 && !d.type && !d.typeOther) { showError("quote.err.type"); return false; }
+    if (step === 2 && !d.country) { showError("quote.err.country"); field("country").focus(); return false; }
     if (step === TOTAL && !d.name) { showError("quote.err.name"); field("name").focus(); return false; }
+    if (step === TOTAL && needReach && !d.reach) { showError("quote.err.reach"); field("reach").focus(); return false; }
     clearError();
     return true;
   }
@@ -92,6 +102,7 @@
     backBtn.hidden = n === 1;
     nextBtn.hidden = n === TOTAL;
     sendBtn.hidden = n !== TOTAL;
+    sendWaBtn.hidden = n !== TOTAL;
     clearError();
     updatePreview();
 
@@ -130,21 +141,65 @@
     show(1, false);
   }
 
-  function submit(e) {
-    e.preventDefault();
-    if (current !== TOTAL) { goNext(); return; }   // Enter key on an earlier step
-    if (!validate(TOTAL)) return;
+  /* Called from the service cards: jumps to step 1 with the service chosen.
+     A service that has no matching option is written into the free-text box. */
+  function prefill(opts) {
+    if (form.classList.contains("is-done")) reset();
+    form.querySelectorAll('input[name="type"]').forEach((r) => { r.checked = false; });
+    field("typeOther").value = "";
+    const radio = opts.type && form.querySelector('input[name="type"][value="' + opts.type + '"]');
+    if (radio) radio.checked = true;
+    else if (opts.textKey) field("typeOther").value = t(opts.textKey);
+    show(1, false);
+    document.getElementById("quote").scrollIntoView();
+  }
 
-    const url = whatsappUrl();
-    DC.analytics.track("quizSent");
-    const win = window.open(url, "_blank");
-    if (win) win.opener = null;                    // if blocked, the button below still works
-
-    doneLink.href = url;
+  function showDone(titleKey, textKey) {
+    const title = done.querySelector("h3");
+    title.dataset.i18n = titleKey;
+    done.querySelector("p").dataset.i18n = textKey;
+    DC.i18n.apply(done);
+    doneLink.href = whatsappUrl();
     form.classList.add("is-done");
     done.hidden = false;
-    done.querySelector("h3").tabIndex = -1;
-    done.querySelector("h3").focus({ preventScroll: true });
+    title.tabIndex = -1;
+    title.focus({ preventScroll: true });
+  }
+
+  /* "Send" – delivered to the owner's inbox automatically, no app needed */
+  async function submit(e) {
+    e.preventDefault();
+    if (current !== TOTAL) { goNext(); return; }   // Enter key on an earlier step
+    if (!validate(TOTAL, true)) return;
+
+    const d = read();
+    const label = sendBtn.querySelector("span");
+    sendBtn.disabled = true;
+    label.textContent = t("contact.sending");
+    try {
+      await DC.mail.send({
+        name: d.name,
+        reach: d.reach,
+        message: buildMessage().replace(/\*/g, ""),
+        language: cfg.languages[DC.i18n.lang].name
+      });
+      DC.analytics.track("quizSent");
+      showDone("quote.doneMail.title", "quote.doneMail.text");
+    } catch (err) {
+      showError("quote.err.send");
+    } finally {
+      sendBtn.disabled = false;
+      label.textContent = t("btn.sendMail");
+    }
+  }
+
+  /* "Send via WhatsApp" – opens a chat with the message already written */
+  function sendWhatsapp() {
+    if (!validate(TOTAL, false)) return;
+    DC.analytics.track("quizSent");
+    const win = window.open(whatsappUrl(), "_blank");
+    if (win) win.opener = null;                    // if blocked, the button on the next screen still works
+    showDone("quote.done.title", "quote.done.text");
   }
 
   function init() {
@@ -154,11 +209,12 @@
     backBtn.addEventListener("click", goBack);
     document.getElementById("quote-restart").addEventListener("click", reset);
     form.addEventListener("submit", submit);
+    sendWaBtn.addEventListener("click", sendWhatsapp);
     form.addEventListener("input", updatePreview);
     form.addEventListener("change", updatePreview);
     document.addEventListener("dc:langchange", () => { clearError(); updatePreview(); });
     show(1, false);
   }
 
-  DC.questionnaire = { init };
+  DC.questionnaire = { init, prefill };
 })();

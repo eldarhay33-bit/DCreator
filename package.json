@@ -1,0 +1,8 @@
+{
+  "name": "dcreator-site",
+  "private": true,
+  "description": "DCreator static site with Netlify Functions for anonymous visitor statistics",
+  "dependencies": {
+    "@netlify/blobs": "^8.1.0"
+  }
+}

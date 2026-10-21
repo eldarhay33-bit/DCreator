@@ -87,6 +87,8 @@
     if (sha256(cfg.adminSalt + codeInput.value) === cfg.adminHash) {
       attempts = 0;
       DC.store.session.write(cfg.keys.adminSession, "1");
+      DC.store.session.write(cfg.keys.adminCode, codeInput.value);   // sent to /api/stats to read live numbers
+      DC.store.write(cfg.keys.owner, true);                         // stop counting the owner's own visits
       codeInput.value = "";
       loginDlg.close();
       openPanel();
@@ -118,6 +120,7 @@
 
   function logout() {
     DC.store.session.remove(cfg.keys.adminSession);
+    DC.store.session.remove(cfg.keys.adminCode);
     panel.close();
   }
 
@@ -292,6 +295,7 @@
       const langNames = failed.map((l) => cfg.languages[l].name).join(", ");
       resetForm(true);
       showStatus(failed.length ? tt("f.translateFail", { langs: langNames }) : tt("f.saved"));
+      autoPublish();
     } finally {
       setBusy(false);
     }
@@ -352,7 +356,7 @@
         iconButton("i-trash", tt("list.delete"), () => {
           if (!window.confirm(tt("list.confirmDelete", { t: name }))) return;
           if (editingId === item.id) resetForm();
-          P().remove(item.id);
+          if (P().remove(item.id)) autoPublish();
         }, "danger"));
       list.appendChild(li);
     });
@@ -376,11 +380,81 @@
   }
 
   function renderPublish() {
+    const state = P().publishState();
     const status = $("publish-status");
-    const dirty = P().isDirty();
-    status.textContent = tt(dirty ? "pub.dirty" : "pub.clean");
-    status.className = "publish-status " + (dirty ? "is-dirty" : "is-clean");
-    $("pub-reset").disabled = !dirty;
+    status.textContent = tt(state === "dirty" ? "pub.dirty" : state === "pending" ? "pub.pending" : "pub.clean");
+    status.className = "publish-status " + (state === "dirty" ? "is-dirty" : "is-clean");
+    $("pub-reset").disabled = state === "clean";
+    renderGithub();
+  }
+
+  /* --------------------------------------------------- GitHub auto-publish */
+  const gh = {};
+
+  function ghStatus(message, isError) {
+    gh.status.textContent = message || "";
+    gh.status.className = isError ? "form-error" : "form-status";
+    gh.status.hidden = !message;
+  }
+
+  const ghErrorText = (e) => (e.status === 401 || e.status === 403 || e.status === 404 ? tt("gh.errAuth") : e.message);
+
+  function renderGithub() {
+    const conn = DC.github.get();
+    gh.autoWrap.hidden = !conn;
+    gh.now.hidden = !conn;
+    gh.disconnect.hidden = !conn;
+    gh.connect.hidden = !!conn;
+    [gh.repo, gh.branch, gh.token].forEach((c) => { c.disabled = !!conn; });
+    if (conn) {
+      gh.repo.value = conn.repo;
+      gh.branch.value = conn.branch;
+      gh.token.value = "";
+      gh.token.placeholder = "••••••••";
+      gh.auto.checked = conn.auto !== false;
+    } else {
+      gh.token.placeholder = "";
+    }
+  }
+
+  async function publishNow() {
+    if (!DC.github.get()) return;
+    let sent = null;
+    ghStatus(tt("gh.publishing"));
+    gh.now.disabled = true;
+    try {
+      await DC.github.publish(() => { sent = P().snapshot(); return P().exportJs(); });
+      P().markPublished(sent);
+      ghStatus(tt("gh.ok"));
+      renderPublish();
+    } catch (e) {
+      ghStatus(tt("gh.err", { m: ghErrorText(e) }), true);
+    } finally {
+      gh.now.disabled = false;
+    }
+  }
+
+  function autoPublish() {
+    const conn = DC.github.get();
+    if (conn && conn.auto !== false) publishNow();
+  }
+
+  async function connectGithub() {
+    const repo = gh.repo.value.trim();
+    const branch = gh.branch.value.trim() || "main";
+    const token = gh.token.value.trim();
+    if (!/^[\w.-]+\/[\w.-]+$/.test(repo)) { ghStatus(tt("gh.errRepo"), true); return; }
+    if (!token) { ghStatus(tt("gh.errToken"), true); return; }
+    ghStatus(tt("gh.verifying"));
+    try {
+      await DC.github.verify({ repo, token });
+    } catch (e) {
+      ghStatus(tt("gh.err", { m: ghErrorText(e) }), true);
+      return;
+    }
+    DC.github.set({ repo, branch, token, auto: true });
+    renderGithub();
+    ghStatus(tt("gh.connected", { repo }));
   }
 
   function exportFile() {
@@ -402,10 +476,46 @@
     return h ? h + ":" + pad(m) + ":" + pad(s) : m + ":" + pad(s);
   }
 
-  function renderAnalytics() {
-    const r = DC.analytics.report();
+  /* Draws one bar list (referrers / countries). */
+  function fillBars(list, rows, labelOf) {
+    list.textContent = "";
+    if (!rows.length) {
+      const li = document.createElement("li");
+      li.className = "admin-empty";
+      li.textContent = tt("an.none");
+      list.appendChild(li);
+      return;
+    }
+    const top = rows[0].count || 1;
+    rows.forEach((row) => {
+      const li = document.createElement("li");
+      const name = document.createElement("span");
+      name.className = "name";
+      name.textContent = labelOf(row);
+      const num = document.createElement("span");
+      num.className = "num";
+      num.textContent = row.count.toLocaleString();
+      const bar = document.createElement("span");
+      bar.className = "bar";
+      const fill = document.createElement("i");
+      fill.style.setProperty("--w", Math.max(4, Math.round((row.count / top) * 100)) + "%");
+      bar.appendChild(fill);
+      li.append(name, num, bar);
+      list.appendChild(li);
+    });
+  }
+
+  function countryName(row) {
+    if (!row.code || row.code === "XX") return tt("an.unknown");
+    try { return new Intl.DisplayNames([DC.i18n.adminLang()], { type: "region" }).of(row.code) || row.name || row.code; }
+    catch (e) { return row.name || row.code; }
+  }
+
+  /* r = report from DC.analytics (this browser) or from /api/stats (all visitors) */
+  function drawAnalytics(r, live) {
     const tiles = [
       [r.visits.toLocaleString(), "an.visits"],
+      [r.avgPerDay.toLocaleString(), "an.avgPerDay"],
       [fmtDuration(r.avgSeconds), "an.avg"],
       [r.whatsapp.toLocaleString(), "an.whatsapp"],
       [r.quizClicks.toLocaleString(), "an.quizClicks"],
@@ -426,33 +536,32 @@
       grid.appendChild(box);
     });
 
-    const list = $("referrer-list");
-    list.textContent = "";
-    if (!r.referrers.length) {
-      const li = document.createElement("li");
-      li.className = "admin-empty";
-      li.textContent = tt("an.none");
-      list.appendChild(li);
-    }
-    const top = r.referrers.length ? r.referrers[0].count : 1;
-    r.referrers.forEach((ref) => {
-      const li = document.createElement("li");
-      const name = document.createElement("span");
-      name.className = "name";
-      name.textContent = ref.name === "__direct__" ? tt("an.direct") : ref.name;
-      const num = document.createElement("span");
-      num.className = "num";
-      num.textContent = ref.count.toLocaleString();
-      const bar = document.createElement("span");
-      bar.className = "bar";
-      const fill = document.createElement("i");
-      fill.style.setProperty("--w", Math.max(4, Math.round((ref.count / top) * 100)) + "%");
-      bar.appendChild(fill);
-      li.append(name, num, bar);
-      list.appendChild(li);
-    });
+    $("countries-panel").hidden = !live;
+    if (live) fillBars($("country-list"), r.countries, countryName);
+    fillBars($("referrer-list"), r.referrers, (ref) => (ref.name === "__direct__" ? tt("an.direct") : ref.name));
 
-    $("analytics-since").textContent = tt("an.since", { d: new Date(r.since).toLocaleDateString(DC.i18n.adminLang()) });
+    $("analytics-note").textContent = tt(live ? "an.noteLive" : "an.note");
+    $("analytics-since").textContent = r.since ? tt("an.since", { d: new Date(r.since).toLocaleDateString(DC.i18n.adminLang()) }) : "";
+  }
+
+  /* Shows this browser's numbers at once, then swaps in the live numbers
+     from all visitors when the server part (netlify/functions) answers. */
+  async function renderAnalytics() {
+    drawAnalytics(DC.analytics.report(), false);
+    $("analytics-reset").hidden = false;
+    const code = DC.store.session.read(cfg.keys.adminCode);
+    if (!code) return;
+    try {
+      const res = await fetch(cfg.statsEndpoint, { headers: { "x-admin-code": code }, cache: "no-store" });
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      const live = await res.json();
+      if (!$("pane-analytics").hidden) {
+        drawAnalytics(live, true);
+        $("analytics-reset").hidden = true;      // live numbers live on the server
+      }
+    } catch (e) {
+      $("analytics-note").textContent = tt("an.note") + " " + tt("an.noRemote");
+    }
   }
 
   /* ----------------------------------------------------------------- init */
@@ -496,6 +605,19 @@
     });
     f.file.addEventListener("change", onFile);
     f.clearImage.addEventListener("click", () => { f.file.value = ""; setImage(""); });
+
+    Object.assign(gh, {
+      repo: $("gh-repo"), branch: $("gh-branch"), token: $("gh-token"),
+      connect: $("gh-connect"), disconnect: $("gh-disconnect"),
+      auto: $("gh-auto"), autoWrap: $("gh-auto-wrap"), now: $("pub-now"), status: $("gh-status")
+    });
+    gh.connect.addEventListener("click", connectGithub);
+    gh.disconnect.addEventListener("click", () => { DC.github.clear(); renderGithub(); ghStatus(""); });
+    gh.auto.addEventListener("change", () => {
+      const conn = DC.github.get();
+      if (conn) DC.github.set(Object.assign(conn, { auto: gh.auto.checked }));
+    });
+    gh.now.addEventListener("click", publishNow);
 
     $("pub-export").addEventListener("click", exportFile);
     $("pub-reset").addEventListener("click", () => {

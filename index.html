@@ -53,6 +53,8 @@
     <symbol id="i-layout" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18M9 21V9"/></symbol>
     <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></symbol>
     <symbol id="i-mail" viewBox="0 0 24 24"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></symbol>
+    <symbol id="i-bulb" viewBox="0 0 24 24"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6M10 22h4"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
     <symbol id="i-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></symbol>
   </svg>
 
@@ -131,44 +133,102 @@
       <div class="container">
         <header class="section-head">
           <h2 data-i18n="services.title">What we build</h2>
-          <p data-i18n="services.sub">Three specialties, one creative partner.</p>
+          <p data-i18n="services.sub">Everything you need to get online, from one creative partner.</p>
         </header>
         <div class="service-grid">
-          <article class="glass service">
+          <article class="glass service" data-q="web" data-pf="web">
             <span class="service-icon"><svg class="icon" aria-hidden="true"><use href="#i-web"/></svg></span>
-            <h3 data-i18n="svc.web.t">Websites</h3>
+            <h3><button type="button" class="service-toggle" aria-expanded="false" aria-controls="svc-web" data-i18n="svc.web.t">Websites</button></h3>
             <p data-i18n="svc.web.d">Business sites and smart stores that look sharp, load fast and turn visitors into customers.</p>
+            <div class="service-actions" id="svc-web"><div class="service-actions-inner">
+              <a class="btn btn-primary btn-sm" href="#quote" data-track="quiz" data-act="quote"><span data-i18n="svc.toQuote">Go to the questionnaire</span></a>
+              <a class="btn btn-ghost btn-sm" href="#portfolio" data-act="portfolio"><span data-i18n="hero.cta2">View portfolio</span></a>
+            </div></div>
           </article>
-          <article class="glass service">
+          <article class="glass service" data-q="game" data-pf="game">
             <span class="service-icon"><svg class="icon" aria-hidden="true"><use href="#i-game"/></svg></span>
-            <h3 data-i18n="svc.game.t">Browser games</h3>
+            <h3><button type="button" class="service-toggle" aria-expanded="false" aria-controls="svc-game" data-i18n="svc.game.t">Browser games</button></h3>
             <p data-i18n="svc.game.d">Interactive games that run instantly in any browser – no download, on any device.</p>
+            <div class="service-actions" id="svc-game"><div class="service-actions-inner">
+              <a class="btn btn-primary btn-sm" href="#quote" data-track="quiz" data-act="quote"><span data-i18n="svc.toQuote">Go to the questionnaire</span></a>
+              <a class="btn btn-ghost btn-sm" href="#portfolio" data-act="portfolio"><span data-i18n="hero.cta2">View portfolio</span></a>
+            </div></div>
           </article>
-          <article class="glass service">
+          <article class="glass service" data-q="sim" data-pf="sim">
             <span class="service-icon"><svg class="icon" aria-hidden="true"><use href="#i-sim"/></svg></span>
-            <h3 data-i18n="svc.sim.t">3D simulations</h3>
+            <h3><button type="button" class="service-toggle" aria-expanded="false" aria-controls="svc-sim" data-i18n="svc.sim.t">3D simulations</button></h3>
             <p data-i18n="svc.sim.d">Real-time 3D visualizations and simulations that bring products and ideas to life.</p>
+            <div class="service-actions" id="svc-sim"><div class="service-actions-inner">
+              <a class="btn btn-primary btn-sm" href="#quote" data-track="quiz" data-act="quote"><span data-i18n="svc.toQuote">Go to the questionnaire</span></a>
+              <a class="btn btn-ghost btn-sm" href="#portfolio" data-act="portfolio"><span data-i18n="hero.cta2">View portfolio</span></a>
+            </div></div>
           </article>
-          <article class="glass service">
+          <article class="glass service" data-q="store" data-pf="web">
             <span class="service-icon"><svg class="icon" aria-hidden="true"><use href="#i-store"/></svg></span>
-            <h3 data-i18n="svc.store.t">Smart stores</h3>
+            <h3><button type="button" class="service-toggle" aria-expanded="false" aria-controls="svc-store" data-i18n="svc.store.t">Smart stores</button></h3>
             <p data-i18n="svc.store.d">Online stores with secure checkout, inventory and a smooth mobile shopping experience.</p>
+            <div class="service-actions" id="svc-store"><div class="service-actions-inner">
+              <a class="btn btn-primary btn-sm" href="#quote" data-track="quiz" data-act="quote"><span data-i18n="svc.toQuote">Go to the questionnaire</span></a>
+              <a class="btn btn-ghost btn-sm" href="#portfolio" data-act="portfolio"><span data-i18n="hero.cta2">View portfolio</span></a>
+            </div></div>
           </article>
-          <article class="glass service">
+          <article class="glass service" data-q-text="svc.landing.t" data-pf="web">
             <span class="service-icon"><svg class="icon" aria-hidden="true"><use href="#i-layout"/></svg></span>
-            <h3 data-i18n="svc.landing.t">Landing pages</h3>
+            <h3><button type="button" class="service-toggle" aria-expanded="false" aria-controls="svc-landing" data-i18n="svc.landing.t">Landing pages</button></h3>
             <p data-i18n="svc.landing.d">Focused one-page sites built to convert campaigns into leads and sales.</p>
+            <div class="service-actions" id="svc-landing"><div class="service-actions-inner">
+              <a class="btn btn-primary btn-sm" href="#quote" data-track="quiz" data-act="quote"><span data-i18n="svc.toQuote">Go to the questionnaire</span></a>
+              <a class="btn btn-ghost btn-sm" href="#portfolio" data-act="portfolio"><span data-i18n="hero.cta2">View portfolio</span></a>
+            </div></div>
           </article>
-          <article class="glass service">
+          <article class="glass service" data-q-text="svc.app.t" data-pf="web">
             <span class="service-icon"><svg class="icon" aria-hidden="true"><use href="#i-code"/></svg></span>
-            <h3 data-i18n="svc.app.t">Web apps</h3>
+            <h3><button type="button" class="service-toggle" aria-expanded="false" aria-controls="svc-app" data-i18n="svc.app.t">Web apps</button></h3>
             <p data-i18n="svc.app.d">Custom dashboards, booking systems and tools tailored to how your business works.</p>
+            <div class="service-actions" id="svc-app"><div class="service-actions-inner">
+              <a class="btn btn-primary btn-sm" href="#quote" data-track="quiz" data-act="quote"><span data-i18n="svc.toQuote">Go to the questionnaire</span></a>
+              <a class="btn btn-ghost btn-sm" href="#portfolio" data-act="portfolio"><span data-i18n="hero.cta2">View portfolio</span></a>
+            </div></div>
+          </article>
+          <article class="glass service" data-q-text="svc.care.t" data-pf="all">
+            <span class="service-icon"><svg class="icon" aria-hidden="true"><use href="#i-shield"/></svg></span>
+            <h3><button type="button" class="service-toggle" aria-expanded="false" aria-controls="svc-care" data-i18n="svc.care.t">Support &amp; maintenance</button></h3>
+            <p data-i18n="svc.care.d">Updates, fixes and improvements after launch, so your site stays fast and secure.</p>
+            <div class="service-actions" id="svc-care"><div class="service-actions-inner">
+              <a class="btn btn-primary btn-sm" href="#quote" data-track="quiz" data-act="quote"><span data-i18n="svc.toQuote">Go to the questionnaire</span></a>
+              <a class="btn btn-ghost btn-sm" href="#portfolio" data-act="portfolio"><span data-i18n="hero.cta2">View portfolio</span></a>
+            </div></div>
           </article>
           <article class="glass service">
-            <span class="service-icon"><svg class="icon" aria-hidden="true"><use href="#i-shield"/></svg></span>
-            <h3 data-i18n="svc.care.t">Support &amp; maintenance</h3>
-            <p data-i18n="svc.care.d">Updates, fixes and improvements after launch, so your site stays fast and secure.</p>
+            <span class="service-icon"><svg class="icon" aria-hidden="true"><use href="#i-bulb"/></svg></span>
+            <h3><button type="button" class="service-toggle" aria-expanded="false" aria-controls="svc-help" data-i18n="svc.help.t">Consulting &amp; guidance</button></h3>
+            <p data-i18n="svc.help.d">Not sure what you need? We help you choose the right solution, plan it and avoid costly mistakes.</p>
+            <div class="service-actions" id="svc-help"><div class="service-actions-inner">
+              <a class="btn btn-primary btn-sm" href="#contact"><span data-i18n="contact.title">Contact us</span></a>
+            </div></div>
           </article>
+          <article class="glass service service-more" data-pf="other">
+            <span class="service-icon"><svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg></span>
+            <h3><button type="button" class="service-toggle" aria-expanded="false" aria-controls="svc-more" data-i18n="svc.more.t">And more…</button></h3>
+            <p data-i18n="svc.more.d">Custom projects built to order, exactly as the client requests.</p>
+            <div class="service-actions" id="svc-more"><div class="service-actions-inner">
+              <a class="btn btn-primary btn-sm" href="#quote" data-track="quiz" data-act="quote"><span data-i18n="svc.toQuote">Go to the questionnaire</span></a>
+              <a class="btn btn-ghost btn-sm" href="#portfolio" data-act="portfolio"><span data-i18n="hero.cta2">View portfolio</span></a>
+            </div></div>
+          </article>
+        </div>
+        <div class="help-banner glass">
+          <p data-i18n="services.help">Need help or advice, and not sure what your business needs? Get in touch.</p>
+          <div class="help-actions">
+            <a class="btn btn-primary" href="#contact">
+              <svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg>
+              <span data-i18n="contact.title">Contact us</span>
+            </a>
+            <a class="btn btn-ghost" href="https://wa.me/972559112028" target="_blank" rel="noopener" data-track="whatsapp">
+              <svg class="icon" aria-hidden="true"><use href="#i-chat"/></svg>
+              <span data-i18n="contact.whatsapp">WhatsApp</span>
+            </a>
+          </div>
         </div>
       </div>
     </section>
@@ -196,6 +256,7 @@
           <button type="button" class="chip" data-filter="web" aria-pressed="false" data-i18n="filter.web">Websites</button>
           <button type="button" class="chip" data-filter="game" aria-pressed="false" data-i18n="filter.game">Games</button>
           <button type="button" class="chip" data-filter="sim" aria-pressed="false" data-i18n="filter.sim">Simulations</button>
+          <button type="button" class="chip" data-filter="other" aria-pressed="false" data-i18n="filter.other">Other</button>
         </div>
         <div class="card-grid" id="portfolio-grid"></div>
         <p class="empty glass" id="portfolio-empty" hidden data-i18n="portfolio.empty">New projects are on the way – check back soon.</p>
@@ -227,6 +288,7 @@
               <label class="choice"><input type="radio" name="type" value="store"><span class="choice-body"><svg class="icon" aria-hidden="true"><use href="#i-store"/></svg><span data-i18n="q1.store">Smart store</span></span></label>
               <label class="choice"><input type="radio" name="type" value="game"><span class="choice-body"><svg class="icon" aria-hidden="true"><use href="#i-game"/></svg><span data-i18n="q1.game">Browser game</span></span></label>
               <label class="choice"><input type="radio" name="type" value="sim"><span class="choice-body"><svg class="icon" aria-hidden="true"><use href="#i-sim"/></svg><span data-i18n="q1.sim">3D simulation</span></span></label>
+              <label class="choice choice-wide"><input type="radio" name="type" value="help"><span class="choice-body"><svg class="icon" aria-hidden="true"><use href="#i-bulb"/></svg><span data-i18n="q1.help">Consulting – not sure what I need</span></span></label>
             </div>
             <label class="field">
               <span class="field-label" data-i18n="q1.otherLabel">Or describe your idea in your own words</span>
@@ -237,7 +299,30 @@
           <!-- Step 2 -->
           <fieldset class="step" data-step="2" hidden>
             <legend data-i18n="q2.title">What is your estimated budget?</legend>
-            <p class="hint" data-i18n="q2.sub">Write an amount, and choose how it should be read.</p>
+            <label class="field">
+              <span class="field-label"><span data-i18n="q2.country">Where are you from?</span> <b class="req" aria-hidden="true">*</b></span>
+              <input type="text" name="country" maxlength="60" autocomplete="country-name" aria-required="true" data-i18n-placeholder="q2.countryPh" placeholder="e.g. Israel">
+            </label>
+            <label class="field">
+              <span class="field-label" data-i18n="q2.currency">Currency you would like to pay in</span>
+              <select name="currency">
+                <option value="ILS">₪ ILS</option>
+                <option value="USD">$ USD</option>
+                <option value="EUR">€ EUR</option>
+                <option value="GBP">£ GBP</option>
+                <option value="CAD">C$ CAD</option>
+                <option value="AUD">A$ AUD</option>
+                <option value="CHF">CHF</option>
+                <option value="AED">AED</option>
+                <option value="TRY">₺ TRY</option>
+                <option value="RUB">₽ RUB</option>
+                <option value="CNY">¥ CNY</option>
+                <option value="JPY">¥ JPY</option>
+                <option value="other" data-i18n="q2.currencyOther">Other – tell us in the notes</option>
+              </select>
+              <span class="field-hint" data-i18n="q2.currencyNote">If we do not accept your currency, we will let you know soon.</span>
+            </label>
+            <p class="hint budget-hint" data-i18n="q2.sub">Write an amount, and choose how it should be read.</p>
             <div class="combo">
               <label class="field grow">
                 <span class="field-label" data-i18n="q2.label">Budget</span>
@@ -345,7 +430,7 @@
           <svg class="icon" aria-hidden="true"><use href="#i-chat"/></svg>
           <span data-i18n="contact.whatsapp">WhatsApp</span>
         </a>
-        <a class="btn btn-ghost" href="mailto:eldarhay33@gmail.com">
+        <a class="btn btn-ghost" href="mailto:eldarhay33@gmail.com?subject=DCreator">
           <svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg>
           <span><span data-i18n="contact.email">Email</span>: <bdi dir="ltr">eldarhay33@gmail.com</bdi></span>
         </a>
@@ -434,6 +519,7 @@
                     <option value="web" data-i18n="filter.web">Websites</option>
                     <option value="game" data-i18n="filter.game">Games</option>
                     <option value="sim" data-i18n="filter.sim">Simulations</option>
+                    <option value="other" data-i18n="filter.other">Other</option>
                   </select>
                 </label>
               </div>
@@ -491,9 +577,39 @@
               <div class="panel publish-box" id="publish-box">
                 <h3 data-i18n="pub.title">Publishing</h3>
                 <p id="publish-status" class="publish-status"></p>
+                <details class="gh" id="gh-box">
+                  <summary data-i18n="gh.title">Automatic publishing (GitHub)</summary>
+                  <p class="hint" data-i18n="gh.help">Connect once and every change is published to the site automatically.</p>
+                  <label class="field">
+                    <span class="field-label" data-i18n="gh.repo">Repository (owner/name)</span>
+                    <input type="text" id="gh-repo" dir="ltr" placeholder="eldarhay33-bit/DCreator" value="eldarhay33-bit/DCreator" autocomplete="off">
+                  </label>
+                  <div class="row-2">
+                    <label class="field">
+                      <span class="field-label" data-i18n="gh.branch">Branch</span>
+                      <input type="text" id="gh-branch" dir="ltr" value="main" autocomplete="off">
+                    </label>
+                    <label class="field">
+                      <span class="field-label" data-i18n="gh.token">Access token</span>
+                      <input type="password" id="gh-token" dir="ltr" autocomplete="off" spellcheck="false">
+                    </label>
+                  </div>
+                  <div class="publish-actions">
+                    <button type="button" class="btn btn-ghost btn-sm" id="gh-connect" data-i18n="gh.connect">Connect</button>
+                    <button type="button" class="btn btn-ghost btn-sm" id="gh-disconnect" hidden data-i18n="gh.disconnect">Disconnect</button>
+                  </div>
+                </details>
+                <label class="check" id="gh-auto-wrap" hidden>
+                  <input type="checkbox" id="gh-auto" checked>
+                  <span data-i18n="gh.auto">Publish automatically after every change</span>
+                </label>
+                <p class="form-status" id="gh-status" role="status" hidden></p>
+                <div class="publish-actions">
+                  <button type="button" class="btn btn-primary btn-sm" id="pub-now" hidden data-i18n="gh.publishNow">Publish to site now</button>
+                </div>
                 <p class="hint" data-i18n="pub.howto">To show your changes to every visitor, download the file below and replace js/portfolio-data.js on your hosting.</p>
                 <div class="publish-actions">
-                  <button type="button" class="btn btn-primary btn-sm" id="pub-export">
+                  <button type="button" class="btn btn-ghost btn-sm" id="pub-export">
                     <svg class="icon" aria-hidden="true"><use href="#i-download"/></svg>
                     <span data-i18n="pub.export">Download portfolio-data.js</span>
                   </button>
@@ -511,11 +627,15 @@
         <!-- Analytics -->
         <section id="pane-analytics" role="tabpanel" aria-labelledby="tab-analytics" hidden>
           <div class="stat-grid" id="stat-grid"></div>
+          <div class="panel" id="countries-panel" hidden>
+            <h3 data-i18n="an.countries">Where visitors are from</h3>
+            <ul class="bar-list" id="country-list"></ul>
+          </div>
           <div class="panel">
             <h3 data-i18n="an.referrers">Traffic sources</h3>
             <ul class="bar-list" id="referrer-list"></ul>
           </div>
-          <p class="hint" data-i18n="an.note">Statistics are stored in this browser only. They show visits made from this device.</p>
+          <p class="hint" id="analytics-note"></p>
           <div class="dialog-actions start">
             <button type="button" class="btn btn-ghost btn-sm" id="analytics-reset" data-i18n="an.reset">Reset analytics</button>
             <span class="hint" id="analytics-since"></span>
@@ -533,6 +653,8 @@
   <script defer src="js/portfolio.js"></script>
   <script defer src="js/contact.js"></script>
   <script defer src="js/questionnaire.js"></script>
+  <script defer src="js/services.js"></script>
+  <script defer src="js/github.js"></script>
   <script defer src="js/admin.js"></script>
   <script defer src="js/main.js"></script>
 </body>

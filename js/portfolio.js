@@ -7,8 +7,8 @@
   const cfg = DC.config;
   const KEY = cfg.keys.portfolio;
   const LANGS = Object.keys(cfg.languages);
-  const CATS = ["web", "game", "sim"];
-  const CAT_ICON = { web: "i-web", game: "i-game", sim: "i-sim" };
+  const CATS = ["web", "game", "sim", "other"];
+  const CAT_ICON = { web: "i-web", game: "i-game", sim: "i-sim", other: "i-layout" };
   const SVG_NS = "http://www.w3.org/2000/svg";
 
   const clone = (o) => JSON.parse(JSON.stringify(o));
@@ -45,10 +45,21 @@
     return true;
   }
 
-  const isDirty = () => JSON.stringify(items) !== JSON.stringify(published());
+  /* clean   = same as the live file
+     pending = already sent to GitHub, the site is still rebuilding
+     dirty   = local changes that are not published anywhere yet */
+  function publishState() {
+    const now = JSON.stringify(items);
+    if (now === JSON.stringify(published())) return "clean";
+    return now === DC.store.read(cfg.keys.lastPublished, null) ? "pending" : "dirty";
+  }
+
+  const snapshot = () => JSON.stringify(items);
+  const markPublished = (sent) => DC.store.write(cfg.keys.lastPublished, sent || snapshot());
 
   function resetLocal() {
     DC.store.remove(KEY);
+    DC.store.remove(cfg.keys.lastPublished);
     items = clone(published());
     emitChange();
   }
@@ -178,36 +189,53 @@
     reveal(cards);
   }
 
+  function setFilter(value) {
+    filter = CATS.includes(value) ? value : "all";
+    document.querySelectorAll("#portfolio-filters [data-filter]").forEach((b) => {
+      const on = b.dataset.filter === filter;
+      b.classList.toggle("is-active", on);
+      b.setAttribute("aria-pressed", String(on));
+    });
+    render();
+  }
+
   function initFilters() {
     const bar = document.getElementById("portfolio-filters");
     if (!bar) return;
     bar.addEventListener("click", (e) => {
       const btn = e.target.closest("[data-filter]");
-      if (!btn) return;
-      filter = btn.dataset.filter;
-      bar.querySelectorAll("[data-filter]").forEach((b) => {
-        const on = b === btn;
-        b.classList.toggle("is-active", on);
-        b.setAttribute("aria-pressed", String(on));
-      });
-      render();
+      if (btn) setFilter(btn.dataset.filter);
     });
   }
 
   /* The portfolio starts closed and opens on click. */
-  function initToggle() {
+  function syncToggle() {
     const btn = document.getElementById("portfolio-toggle");
     const panel = document.getElementById("portfolio-panel");
     if (!btn || !panel) return;
     const label = btn.querySelector("span");
-    const sync = () => {
-      const open = !panel.hidden;
-      btn.setAttribute("aria-expanded", String(open));
-      label.dataset.i18n = open ? "portfolio.close" : "portfolio.open";
-      label.textContent = DC.i18n.t(label.dataset.i18n);
-    };
-    btn.addEventListener("click", () => { panel.hidden = !panel.hidden; sync(); });
-    document.addEventListener("dc:langchange", sync);
+    const open = !panel.hidden;
+    btn.setAttribute("aria-expanded", String(open));
+    label.dataset.i18n = open ? "portfolio.close" : "portfolio.open";
+    label.textContent = DC.i18n.t(label.dataset.i18n);
+  }
+
+  function initToggle() {
+    const btn = document.getElementById("portfolio-toggle");
+    const panel = document.getElementById("portfolio-panel");
+    if (!btn || !panel) return;
+    btn.addEventListener("click", () => { panel.hidden = !panel.hidden; syncToggle(); });
+    document.addEventListener("dc:langchange", syncToggle);
+  }
+
+  /* Opens the portfolio (optionally on one category) and scrolls to it. */
+  function show(category) {
+    const panel = document.getElementById("portfolio-panel");
+    if (!panel) return;
+    panel.hidden = false;
+    syncToggle();
+    setFilter(category || "all");
+    document.getElementById("portfolio").scrollIntoView();
   }
 
   /* ---------------------------------------------------------- translation */
@@ -331,7 +359,7 @@
     init, render, LANGS, CATS,
     all: () => items,
     byId: (id) => items.find((it) => it.id === id),
-    upsert, remove, isDirty, resetLocal, exportJs, newId,
+    upsert, remove, publishState, markPublished, snapshot, resetLocal, exportJs, newId, show,
     safeUrl, hostOf, pick, isImageSrc, thumbFallback,
     translateAll, processImageFile
   };
