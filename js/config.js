@@ -57,6 +57,7 @@ DC.config = {
   adminLockSeconds: 30,
 
   /* ---- Visitor statistics (Netlify Functions, see netlify/functions) ----- */
+  portfolioEndpoint: "/api/portfolio",
   trackEndpoint: "/api/track",
   statsEndpoint: "/api/stats",
 
@@ -65,8 +66,6 @@ DC.config = {
     prefs: "dc_prefs",
     portfolio: "dc_portfolio",
     analytics: "dc_analytics",
-    lastPublished: "dc_lastpub",
-    github: "dc_github",
     adminSession: "dc_admin",
     adminCode: "dc_admin_code",     // sessionStorage – needed to read /api/stats
     owner: "dc_owner",              // marks the owner's browser: its visits are not counted remotely

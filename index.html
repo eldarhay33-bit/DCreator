@@ -577,37 +577,10 @@
               <div class="panel publish-box" id="publish-box">
                 <h3 data-i18n="pub.title">Publishing</h3>
                 <p id="publish-status" class="publish-status"></p>
-                <details class="gh" id="gh-box">
-                  <summary data-i18n="gh.title">Automatic publishing (GitHub)</summary>
-                  <p class="hint" data-i18n="gh.help">Connect once and every change is published to the site automatically.</p>
-                  <label class="field">
-                    <span class="field-label" data-i18n="gh.repo">Repository (owner/name)</span>
-                    <input type="text" id="gh-repo" dir="ltr" placeholder="eldarhay33-bit/DCreator" value="eldarhay33-bit/DCreator" autocomplete="off">
-                  </label>
-                  <div class="row-2">
-                    <label class="field">
-                      <span class="field-label" data-i18n="gh.branch">Branch</span>
-                      <input type="text" id="gh-branch" dir="ltr" value="main" autocomplete="off">
-                    </label>
-                    <label class="field">
-                      <span class="field-label" data-i18n="gh.token">Access token</span>
-                      <input type="password" id="gh-token" dir="ltr" autocomplete="off" spellcheck="false">
-                    </label>
-                  </div>
-                  <div class="publish-actions">
-                    <button type="button" class="btn btn-ghost btn-sm" id="gh-connect" data-i18n="gh.connect">Connect</button>
-                    <button type="button" class="btn btn-ghost btn-sm" id="gh-disconnect" hidden data-i18n="gh.disconnect">Disconnect</button>
-                  </div>
-                </details>
-                <label class="check" id="gh-auto-wrap" hidden>
-                  <input type="checkbox" id="gh-auto" checked>
-                  <span data-i18n="gh.auto">Publish automatically after every change</span>
-                </label>
-                <p class="form-status" id="gh-status" role="status" hidden></p>
+                <p class="form-status" id="pub-msg" role="status" hidden></p>
                 <div class="publish-actions">
-                  <button type="button" class="btn btn-primary btn-sm" id="pub-now" hidden data-i18n="gh.publishNow">Publish to site now</button>
-                </div>
-                <p class="hint" data-i18n="pub.howto">To show your changes to every visitor, download the file below and replace js/portfolio-data.js on your hosting.</p>
+                  <button type="button" class="btn btn-primary btn-sm" id="pub-now" data-i18n="pub.now">Publish now</button>
+                </div>                <p class="hint" data-i18n="pub.howto">To show your changes to every visitor, download the file below and replace js/portfolio-data.js on your hosting.</p>
                 <div class="publish-actions">
                   <button type="button" class="btn btn-ghost btn-sm" id="pub-export">
                     <svg class="icon" aria-hidden="true"><use href="#i-download"/></svg>
@@ -654,7 +627,6 @@
   <script defer src="js/contact.js"></script>
   <script defer src="js/questionnaire.js"></script>
   <script defer src="js/services.js"></script>
-  <script defer src="js/github.js"></script>
   <script defer src="js/admin.js"></script>
   <script defer src="js/main.js"></script>
 </body>

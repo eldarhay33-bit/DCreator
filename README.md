@@ -22,4 +22,4 @@
 
 ## הגדרות שכדאי להכיר
 - `js/config.js` – טלפון, וואטסאפ, לוגו (`logoMode`: `svg` / `image` / `both`), קוד גישה (hash).
-- `js/portfolio-data.js` – תיק העבודות שכל המבקרים רואים. עדכון: לוח ניהול → "Download portfolio-data.js" → החליפו את הקובץ הזה בריפו (Netlify יתעדכן אוטומטית).
+- תיק העבודות נשמר בשרת (`netlify/functions/portfolio.mjs`): מוסיפים עבודה בלוח הניהול והיא מופיעה אצל כולם מיד. `js/portfolio-data.js` משמש רק כגיבוי.

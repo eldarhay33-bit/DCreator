@@ -382,81 +382,39 @@
   function renderPublish() {
     const state = P().publishState();
     const status = $("publish-status");
-    status.textContent = tt(state === "dirty" ? "pub.dirty" : state === "pending" ? "pub.pending" : "pub.clean");
+    status.textContent = tt(state === "dirty" ? "pub.dirty" : "pub.clean");
     status.className = "publish-status " + (state === "dirty" ? "is-dirty" : "is-clean");
     $("pub-reset").disabled = state === "clean";
-    renderGithub();
   }
 
-  /* --------------------------------------------------- GitHub auto-publish */
-  const gh = {};
-
-  function ghStatus(message, isError) {
-    gh.status.textContent = message || "";
-    gh.status.className = isError ? "form-error" : "form-status";
-    gh.status.hidden = !message;
+  /* ------------------------------------------------- publishing to the site */
+  function pubMessage(message, isError) {
+    const box = $("pub-msg");
+    box.textContent = message || "";
+    box.className = isError ? "form-error" : "form-status";
+    box.hidden = !message;
   }
 
-  const ghErrorText = (e) => (e.status === 401 || e.status === 403 || e.status === 404 ? tt("gh.errAuth") : e.message);
-
-  function renderGithub() {
-    const conn = DC.github.get();
-    gh.autoWrap.hidden = !conn;
-    gh.now.hidden = !conn;
-    gh.disconnect.hidden = !conn;
-    gh.connect.hidden = !!conn;
-    [gh.repo, gh.branch, gh.token].forEach((c) => { c.disabled = !!conn; });
-    if (conn) {
-      gh.repo.value = conn.repo;
-      gh.branch.value = conn.branch;
-      gh.token.value = "";
-      gh.token.placeholder = "••••••••";
-      gh.auto.checked = conn.auto !== false;
-    } else {
-      gh.token.placeholder = "";
-    }
-  }
-
+  /* Saves the list on the server – every visitor sees it straight away. */
   async function publishNow() {
-    if (!DC.github.get()) return;
-    let sent = null;
-    ghStatus(tt("gh.publishing"));
-    gh.now.disabled = true;
+    const code = DC.store.session.read(cfg.keys.adminCode);
+    if (!code) { pubMessage(tt("pub.relogin"), true); return; }
+    const btn = $("pub-now");
+    btn.disabled = true;
+    pubMessage(tt("pub.saving"));
     try {
-      await DC.github.publish(() => { sent = P().snapshot(); return P().exportJs(); });
-      P().markPublished(sent);
-      ghStatus(tt("gh.ok"));
-      renderPublish();
+      await P().saveToServer(code);
+      pubMessage(tt("pub.done"));
     } catch (e) {
-      ghStatus(tt("gh.err", { m: ghErrorText(e) }), true);
+      const why = e.status === 401 ? tt("pub.badCode") : e.status === 404 ? tt("pub.noServer") : e.message;
+      pubMessage(tt("pub.error", { m: why }), true);
     } finally {
-      gh.now.disabled = false;
+      btn.disabled = false;
+      renderPublish();
     }
   }
 
-  function autoPublish() {
-    const conn = DC.github.get();
-    if (conn && conn.auto !== false) publishNow();
-  }
-
-  async function connectGithub() {
-    const repo = gh.repo.value.trim();
-    const branch = gh.branch.value.trim() || "main";
-    const token = gh.token.value.trim();
-    if (!/^[\w.-]+\/[\w.-]+$/.test(repo)) { ghStatus(tt("gh.errRepo"), true); return; }
-    if (!token) { ghStatus(tt("gh.errToken"), true); return; }
-    ghStatus(tt("gh.verifying"));
-    try {
-      await DC.github.verify({ repo, token });
-    } catch (e) {
-      ghStatus(tt("gh.err", { m: ghErrorText(e) }), true);
-      return;
-    }
-    DC.github.set({ repo, branch, token, auto: true });
-    renderGithub();
-    ghStatus(tt("gh.connected", { repo }));
-  }
-
+  const autoPublish = () => { publishNow(); };
   function exportFile() {
     const blob = new Blob([P().exportJs()], { type: "text/javascript" });
     const url = URL.createObjectURL(blob);
@@ -606,18 +564,7 @@
     f.file.addEventListener("change", onFile);
     f.clearImage.addEventListener("click", () => { f.file.value = ""; setImage(""); });
 
-    Object.assign(gh, {
-      repo: $("gh-repo"), branch: $("gh-branch"), token: $("gh-token"),
-      connect: $("gh-connect"), disconnect: $("gh-disconnect"),
-      auto: $("gh-auto"), autoWrap: $("gh-auto-wrap"), now: $("pub-now"), status: $("gh-status")
-    });
-    gh.connect.addEventListener("click", connectGithub);
-    gh.disconnect.addEventListener("click", () => { DC.github.clear(); renderGithub(); ghStatus(""); });
-    gh.auto.addEventListener("change", () => {
-      const conn = DC.github.get();
-      if (conn) DC.github.set(Object.assign(conn, { auto: gh.auto.checked }));
-    });
-    gh.now.addEventListener("click", publishNow);
+    $("pub-now").addEventListener("click", publishNow);
 
     $("pub-export").addEventListener("click", exportFile);
     $("pub-reset").addEventListener("click", () => {
