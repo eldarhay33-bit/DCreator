@@ -1,46 +1,57 @@
-/* ==========================================================================
-   POST /api/track – records one anonymous visitor event.
-   The visitor's country comes from Netlify's edge (context.geo); the IP
-   address is never stored and no cookies are used.
-   ========================================================================== */
-import { getStore } from "@netlify/blobs";
+/* POST /api/track – anonymous visitor counting (see site/js/analytics.js) */
+import { store, json } from "../lib/common.mjs";
 
-const TYPES = new Set(["visit", "time", "whatsapp", "quiz", "quizSent"]);
-const clean = (value, max) => String(value || "").slice(0, max);
+const MAX_SESSIONS = 3000;     // per-session timers kept; older ones are folded into the total
+
+const blank = () => ({
+  since: Date.now(), visits: 0, seconds: 0, sessions: {},
+  referrers: {}, countries: {}, whatsapp: 0, quizClicks: 0, quizSent: 0
+});
+
+const clean = (s, n) => String(s || "").slice(0, n).replace(/[^\w.\-@ ]/g, "");
 
 export default async (req, context) => {
-  if (req.method !== "POST") return new Response("Method not allowed", { status: 405 });
+  if (req.method !== "POST") return json({ error: "method not allowed" }, 405);
+  let body;
+  try { body = await req.json(); } catch (e) { return json({ error: "bad json" }, 400); }
+  if (!body || typeof body.type !== "string") return json({ error: "type required" }, 400);
 
-  /* only accept calls coming from this site's own pages */
-  const origin = req.headers.get("origin");
-  if (origin && new URL(origin).host !== new URL(req.url).host) return new Response("Forbidden", { status: 403 });
+  const db = store();
+  const data = Object.assign(blank(), await db.get("stats", { type: "json" }));
 
-  let data;
-  try { data = await req.json(); } catch (e) { return new Response("Bad request", { status: 400 }); }
-  if (!data || !TYPES.has(data.type)) return new Response("Bad request", { status: 400 });
-
-  const store = getStore("analytics");
-  const now = Date.now();
-
-  /* time on site: one record per browsing session, overwritten as it grows */
-  if (data.type === "time") {
-    const sid = clean(data.sid, 24).replace(/[^a-z0-9]/gi, "");
-    if (!sid) return new Response("Bad request", { status: 400 });
-    const seconds = Math.min(Math.max(Number(data.seconds) || 0, 0), 6 * 3600);
-    await store.setJSON("t/" + sid, { t: now, seconds });
-    return new Response(null, { status: 204 });
+  switch (body.type) {
+    case "visit": {
+      data.visits += 1;
+      const ref = clean(body.ref, 60) || "__direct__";
+      data.referrers[ref] = (data.referrers[ref] || 0) + 1;
+      const geo = context && context.geo && context.geo.country;
+      const code = (geo && geo.code) || "XX";
+      const name = (geo && geo.name) || "";
+      const c = data.countries[code] || { name, count: 0 };
+      c.count += 1;
+      data.countries[code] = c;
+      break;
+    }
+    case "time": {
+      /* the client sends the running total for its session, so keep the largest value per session */
+      const sid = clean(body.sid, 40);
+      const secs = Math.min(Math.max(0, Math.round(Number(body.seconds) || 0)), 86400);
+      if (!sid || !secs) break;
+      data.sessions[sid] = Math.max(data.sessions[sid] || 0, secs);
+      const ids = Object.keys(data.sessions);
+      if (ids.length > MAX_SESSIONS) {
+        ids.slice(0, ids.length - MAX_SESSIONS).forEach((id) => { data.seconds += data.sessions[id]; delete data.sessions[id]; });
+      }
+      break;
+    }
+    case "whatsapp": data.whatsapp += 1; break;
+    case "quiz": data.quizClicks += 1; break;
+    case "quizSent": data.quizSent += 1; break;
+    default: return json({ error: "unknown type" }, 400);
   }
 
-  const country = (context && context.geo && context.geo.country) || {};
-  await store.setJSON("e/" + now + "-" + Math.random().toString(36).slice(2, 8), {
-    t: now,
-    type: data.type,
-    country: country.code || "XX",
-    countryName: country.name || "",
-    ref: clean(data.ref, 80),
-    lang: clean(data.lang, 5)
-  });
-  return new Response(null, { status: 204 });
+  await db.setJSON("stats", data);
+  return json({ ok: true });
 };
 
 export const config = { path: "/api/track" };
