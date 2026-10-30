@@ -18,7 +18,7 @@ DC.config = {
   whatsappMessageLang: "he",
 
   /* ---- Email ------------------------------------------------------------ */
-  contactEmail: "eldarhay33@gmail.com",
+  contactEmail: "dcreator.h@gmail.com",
   mailSubject: "DCreator – פנייה חדשה מהאתר",
 
   /* ---- Logo ------------------------------------------------------------- */
